@@ -3,7 +3,7 @@
 3:I[37574,["/vitalrpgov/_next/static/chunks/e14cdb966f6f4985.js","/vitalrpgov/_next/static/chunks/78987b9c4a177e23.js","/vitalrpgov/_next/static/chunks/24e5f7d2b5f5b5ac.js","/vitalrpgov/_next/static/chunks/cf5afa8131bd6c27.js","/vitalrpgov/_next/static/chunks/a6429bd0dd80c93d.js"],"default"]
 6:I[97367,["/vitalrpgov/_next/static/chunks/ff1a16fafef87110.js","/vitalrpgov/_next/static/chunks/7340adf74ff47ec0.js"],"OutletBoundary"]
 7:"$Sreact.suspense"
-0:{"buildId":"Gbr1gR3yd9vRkny6OagRa","rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/vitalrpgov/_next/static/chunks/a6429bd0dd80c93d.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"loading":null,"isPartial":false}
+0:{"buildId":"EJC4Zgd9hBURPeJmNCSfj","rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/vitalrpgov/_next/static/chunks/a6429bd0dd80c93d.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"loading":null,"isPartial":false}
 4:{}
 5:"$0:rsc:props:children:0:props:serverProvidedParams:params"
 8:null
