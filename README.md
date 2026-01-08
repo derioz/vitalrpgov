@@ -1,5 +1,14 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+> **Created by Damon for Vital RP**
+
+## Deployment
+This project is configured for GitHub Pages deployment using the `/docs` folder strategy.
+1. Run `npm run build` to generate the static site in the `docs` folder.
+2. Push your changes to GitHub.
+3. Go to Repo Settings -> Pages -> Source -> Deploy from a branch.
+4. Select `main` branch and `/docs` folder.
+
 ## Getting Started
 
 First, run the development server:

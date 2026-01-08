@@ -1,0 +1,103 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Functions ---
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Fetch the user's profile document to check roles
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    // Check if the user has a specific role
+    function hasRole(role) {
+      return isAuthenticated() && 
+             role in getUserData().roles;
+    }
+
+    // Check if the user is a global Admin
+    function isAdmin() {
+      return hasRole('admin');
+    }
+
+    // --- Collection Rules ---
+
+    // Users Collection
+    match /users/{userId} {
+      // READ: Users can read their own profile. Admins can read all profiles (for User Management).
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+
+      // CREATE: Allow users to create their own initial profile document (e.g. on first login/profile save)
+      // We must ensure they don't assign themselves 'admin' roles during creation.
+      allow create: if isAuthenticated() && request.auth.uid == userId 
+                    && (!request.resource.data.keys().hasAny(['roles']) || request.resource.data.roles.size() == 0);
+
+      // UPDATE: 
+      // 1. Owners can update their 'icName' but CANNOT modify their 'roles'.
+      // 2. Admins can update anything (including assigning roles).
+      allow update: if isAdmin() 
+                    || (isAuthenticated() && request.auth.uid == userId && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['roles']));
+      
+      // DELETE: Only Admins can delete users.
+      allow delete: if isAdmin();
+    }
+
+    // Announcements Collection
+    match /announcements/{announcementId} {
+      // READ: Publicly visible (news feed).
+      allow read: if true;
+
+      // CREATE: 
+      // 1. Admins can post anything.
+      // 2. Department members can ONLY post if the 'department' field matches their role.
+      allow create: if isAuthenticated() && (
+        isAdmin() ||
+        (hasRole('lspd') && request.resource.data.department == 'LSPD') ||
+        (hasRole('lsems') && request.resource.data.department == 'LSEMS') ||
+        (hasRole('safd') && request.resource.data.department == 'SAFD') ||
+        (hasRole('doj') && request.resource.data.department == 'DOJ')
+      );
+
+      // UPDATE:
+      // Same rules as create, preventing users from changing the department to one they don't own.
+      allow update: if isAuthenticated() && (
+        isAdmin() ||
+        (hasRole('lspd') && resource.data.department == 'LSPD' && request.resource.data.department == 'LSPD') ||
+        (hasRole('lsems') && resource.data.department == 'LSEMS' && request.resource.data.department == 'LSEMS') ||
+        (hasRole('safd') && resource.data.department == 'SAFD' && request.resource.data.department == 'SAFD') ||
+        (hasRole('doj') && resource.data.department == 'DOJ' && request.resource.data.department == 'DOJ')
+      );
+
+      // DELETE: 
+      // Admins or matching department role.
+      allow delete: if isAuthenticated() && (
+        isAdmin() ||
+        (hasRole('lspd') && resource.data.department == 'LSPD') ||
+        (hasRole('lsems') && resource.data.department == 'LSEMS') ||
+        (hasRole('safd') && resource.data.department == 'SAFD') ||
+        (hasRole('doj') && resource.data.department == 'DOJ')
+      );
+    }
+    
+    // Settings Collection (Global Configs)
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && isAdmin();
+      
+      // Allow DOJ to edit their specific resources
+      allow write: if isAuthenticated() && docId == 'doj_resources' && hasRole('doj');
+    }
+
+    // Court Dockets Collection
+    match /dockets/{docketId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && (isAdmin() || hasRole('doj'));
+    }
+  }
+}

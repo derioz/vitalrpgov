@@ -1,0 +1,16 @@
+.footer {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    padding: 1.5rem 0;
+    /* Reduced height */
+    text-align: center;
+    margin-top: 4rem;
+    /* Added spacing from content above */
+    border-top: 1px solid var(--border-color);
+}
+
+.subtext {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
