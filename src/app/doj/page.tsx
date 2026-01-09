@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { FaBalanceScale, FaGavel, FaBook, FaBriefcase, FaUniversity, FaUserTimes, FaChevronRight, FaTimes, FaLandmark } from "react-icons/fa";
 import FactionAnnouncements from "@/components/FactionAnnouncements";
+import FactionJobs from "@/components/FactionJobs";
 import FactionQuickNav from "@/components/FactionQuickNav";
 import DocketList from "@/components/DocketList";
 import { db } from '@/lib/firebase';
@@ -34,7 +35,7 @@ export default function DOJPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200 relative overflow-hidden font-sans selection:bg-amber-500/30">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 relative overflow-hidden font-sans selection:bg-amber-500/30">
 
             {/* Ambient Background Glows */}
             <div className="fixed top-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-amber-600/10 rounded-full blur-[150px] pointer-events-none" />
@@ -49,7 +50,7 @@ export default function DOJPage() {
                             <span className="w-8 h-[1px] bg-amber-500"></span>
                             Judicial Branch
                         </div>
-                        <h1 className="text-7xl md:text-9xl font-black text-white tracking-tighter leading-[0.9] mix-blend-overlay opacity-90 animate-fade-in">
+                        <h1 className="text-7xl md:text-9xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] mix-blend-overlay opacity-90 animate-fade-in">
                             DOJ
                             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-200 text-4xl md:text-6xl mt-2 tracking-normal font-bold">
                                 Department of Justice
@@ -74,7 +75,7 @@ export default function DOJPage() {
                     <div className="lg:col-span-8 space-y-10 animate-fade-in-up delay-200">
                         {/* Court Dockets Feed */}
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
                                 <span className="p-2 bg-amber-500/20 rounded-lg text-amber-500"><FaBalanceScale /></span>
                                 Court Docket Schedule
                             </h2>
@@ -88,6 +89,16 @@ export default function DOJPage() {
                                 title="Department Announcements"
                                 color="amber"
                                 icon={FaUniversity}
+                            />
+                        </section>
+
+                        {/* Job Offerings */}
+                        <section id="apply">
+                            <FactionJobs
+                                department="DOJ"
+                                title="Career Opportunities"
+                                color="amber"
+                                icon={FaBriefcase}
                             />
                         </section>
                     </div>
@@ -110,13 +121,13 @@ export default function DOJPage() {
                                     <button
                                         key={i}
                                         onClick={resource.action}
-                                        className="w-full flex items-center gap-4 p-4 rounded-xl bg-slate-900/40 border border-slate-700/50 hover:bg-slate-800 hover:border-amber-500/30 transition-all duration-300 group text-left relative overflow-hidden"
+                                        className="w-full flex items-center gap-4 p-4 rounded-xl bg-white/50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-amber-500/30 transition-all duration-300 group text-left relative overflow-hidden"
                                     >
-                                        <div className={`w-12 h-12 rounded-lg bg-${resource.color}-500/10 flex items-center justify-center text-${resource.color}-400 group-hover:text-white group-hover:bg-${resource.color}-500 text-xl transition-all`}>
+                                        <div className={`w-12 h-12 rounded-lg bg-${resource.color}-500/10 flex items-center justify-center text-${resource.color}-500 dark:text-${resource.color}-400 group-hover:text-white group-hover:bg-${resource.color}-500 text-xl transition-all`}>
                                             <resource.icon />
                                         </div>
                                         <div>
-                                            <span className="block font-bold text-slate-200 group-hover:text-amber-400 transition-colors">{resource.label}</span>
+                                            <span className="block font-bold text-slate-700 dark:text-slate-200 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">{resource.label}</span>
                                             <span className="text-xs text-slate-500 font-mono uppercase tracking-wide">{resource.sub}</span>
                                         </div>
                                         <FaChevronRight className="ml-auto text-slate-600 group-hover:text-amber-500 transform group-hover:translate-x-1 transition-all" />
@@ -139,13 +150,13 @@ export default function DOJPage() {
                                     <div
                                         key={i}
                                         className={`
-                                        relative overflow-hidden p-6 rounded-2xl bg-slate-800/30 border border-white/5 
+                                        relative overflow-hidden p-6 rounded-2xl bg-white/50 dark:bg-slate-800/30 border border-slate-200 dark:border-white/5 
                                         hover:bg-amber-600 hover:border-amber-500 hover:shadow-[0_0_30px_rgba(245,158,11,0.3)]
                                         transition-all duration-300 group text-left block cursor-pointer
                                     `}>
                                         <a href={action.link} className="absolute inset-0 z-10"></a>
-                                        <action.icon className="text-3xl text-slate-400 group-hover:text-white mb-4 transition-colors relative z-0" />
-                                        <span className="block font-bold text-slate-300 group-hover:text-white transition-colors relative z-0">{action.label}</span>
+                                        <action.icon className="text-3xl text-slate-500 dark:text-slate-400 group-hover:text-white mb-4 transition-colors relative z-0" />
+                                        <span className="block font-bold text-slate-700 dark:text-slate-300 group-hover:text-white transition-colors relative z-0">{action.label}</span>
                                         <FaChevronRight className="absolute bottom-4 right-4 text-white/0 group-hover:text-white/100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300" />
                                     </div>
                                 ))}
@@ -168,11 +179,11 @@ export default function DOJPage() {
 
             {/* Penal Code Modal */}
             {showPenalCode && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-slate-900 border border-slate-700 w-full max-w-[95vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col animate-scale-up">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 dark:bg-black/80 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full max-w-[95vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col animate-scale-up">
 
                         {/* Modal Header */}
-                        <div className="bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-800">
+                        <div className="bg-slate-100 dark:bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
                             <h2 className="text-xl font-bold text-amber-500 flex items-center gap-3">
                                 <FaBook /> San Andreas Penal Code
                             </h2>
@@ -204,11 +215,11 @@ export default function DOJPage() {
 
             {/* Constitution Modal */}
             {showConstitution && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-slate-900 border border-slate-700 w-full max-w-[95vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col animate-scale-up">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 dark:bg-black/80 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full max-w-[95vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col animate-scale-up">
 
                         {/* Modal Header */}
-                        <div className="bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-800">
+                        <div className="bg-slate-100 dark:bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
                             <h2 className="text-xl font-bold text-amber-500 flex items-center gap-3">
                                 <FaBalanceScale /> San Andreas Constitution
                             </h2>
@@ -240,11 +251,11 @@ export default function DOJPage() {
 
             {/* Gov Code Modal */}
             {showGovCode && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-slate-900 border border-slate-700 w-full max-w-[95vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col animate-scale-up">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 dark:bg-black/80 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full max-w-[95vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col animate-scale-up">
 
                         {/* Modal Header */}
-                        <div className="bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-800">
+                        <div className="bg-slate-100 dark:bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
                             <h2 className="text-xl font-bold text-amber-500 flex items-center gap-3">
                                 <FaLandmark /> Government Code
                             </h2>

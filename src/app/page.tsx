@@ -61,8 +61,8 @@ const MinimalCard = ({ href, color, icon: Icon, title, subtitle, number }: any) 
           {subtitle}
         </p>
 
-        <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-[0.2em] text-slate-500 group-hover:text-white transition-colors duration-300">
-          <span className="w-8 h-[1px] bg-slate-700 group-hover:bg-white transition-colors" />
+        <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors duration-300">
+          <span className="w-8 h-[1px] bg-slate-300 dark:bg-slate-700 group-hover:bg-slate-900 dark:group-hover:bg-white transition-colors" />
           Enter Portal
         </div>
       </div>
@@ -73,15 +73,15 @@ const MinimalCard = ({ href, color, icon: Icon, title, subtitle, number }: any) 
 export default function Home() {
   return (
     // Fits exactly under the 95px header.
-    <div className="h-[calc(100vh-95px)] bg-slate-950 flex flex-col relative overflow-hidden">
+    <div className="h-[calc(100vh-95px)] bg-slate-50 dark:bg-slate-950 flex flex-col relative overflow-hidden">
 
       {/* Cinematic Background Grain/Overlay (Static) */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+      <div className="absolute inset-0 pointer-events-none opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] invert dark:invert-0"></div>
 
       {/* Page Header */}
-      <div className="relative z-20 pt-10 pb-6 text-center border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
-        <h1 className="text-3xl md:text-4xl font-serif font-medium text-white tracking-widest uppercase">
-          San Andreas <span className="text-slate-500">Legal Portal</span>
+      <div className="relative z-20 pt-10 pb-6 text-center border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
+        <h1 className="text-3xl md:text-4xl font-serif font-medium text-slate-900 dark:text-white tracking-widest uppercase">
+          San Andreas <span className="text-slate-400 dark:text-slate-500">Legal Portal</span>
         </h1>
         <p className="text-slate-500 text-sm font-mono mt-2 tracking-widest uppercase text-opacity-70">
           Official Unified Government Access Point
@@ -89,7 +89,7 @@ export default function Home() {
       </div>
 
       {/* Faction Panels container */}
-      <div className="flex-1 flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-white/5 relative z-10">
+      <div className="flex-1 flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-slate-200 dark:divide-white/5 relative z-10">
         <MinimalCard
           number="01"
           href="/doj"

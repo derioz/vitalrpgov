@@ -80,7 +80,7 @@ export default function FactionAnnouncements({ department, title, color, icon: I
     return (
         <section>
             <div className="flex items-center gap-4 mb-8">
-                <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                     <Icon className={colorClasses.text} />
                     {title}
                 </h2>
@@ -92,14 +92,14 @@ export default function FactionAnnouncements({ department, title, color, icon: I
                     <div className="h-40 bg-slate-900/50 animate-pulse rounded-2xl border border-white/5"></div>
                 ) : announcements.length > 0 ? (
                     announcements.map((ann) => (
-                        <div key={ann.id} className={`group relative bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-md border border-white/5 rounded-3xl p-8 hover:border-${color}-500/30 transition-all duration-500 overflow-hidden`}>
+                        <div key={ann.id} className={`group relative bg-white/50 dark:bg-gradient-to-br dark:from-slate-900/80 dark:to-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-white/5 rounded-3xl p-8 hover:border-${color}-500/30 transition-all duration-500 overflow-hidden shadow-sm dark:shadow-none`}>
 
                             {/* Hover Glow */}
                             <div className={`absolute inset-0 ${colorClasses.bg}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-overlay`}></div>
 
                             <div className="flex flex-col md:flex-row gap-8 relative z-10">
                                 {/* Date Block */}
-                                <div className={`md:w-24 flex-shrink-0 flex flex-col items-center justify-center p-4 rounded-2xl bg-slate-950/50 border border-white/5 group-hover:border-${color}-500/20 transition-colors`}>
+                                <div className={`md:w-24 flex-shrink-0 flex flex-col items-center justify-center p-4 rounded-2xl bg-slate-100 dark:bg-slate-950/50 border border-slate-200 dark:border-white/5 group-hover:border-${color}-500/20 transition-colors`}>
                                     <span className={`${colorClasses.text} font-black text-3xl`}>
                                         {ann.createdAt?.seconds ? new Date(ann.createdAt.seconds * 1000).getDate() : '!!'}
                                     </span>
@@ -109,7 +109,7 @@ export default function FactionAnnouncements({ department, title, color, icon: I
                                 </div>
 
                                 <div className="flex-1">
-                                    <h3 className={`text-2xl font-bold text-white mb-3 group-hover:${colorClasses.text} transition-colors`}>{ann.title}</h3>
+                                    <h3 className={`text-2xl font-bold text-slate-800 dark:text-white mb-3 group-hover:${colorClasses.text} transition-colors`}>{ann.title}</h3>
 
                                     {ann.tags && ann.tags.length > 0 && (
                                         <div className="flex flex-wrap gap-2 mb-4">
@@ -127,7 +127,7 @@ export default function FactionAnnouncements({ department, title, color, icon: I
                                         </div>
                                     )}
 
-                                    <div className="prose prose-invert prose-lg max-w-none text-slate-400 group-hover:text-slate-300 transition-colors line-clamp-4">
+                                    <div className="prose prose-slate dark:prose-invert prose-lg max-w-none text-slate-600 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors line-clamp-4">
                                         <ReactMarkdown>{ann.content}</ReactMarkdown>
                                     </div>
                                 </div>

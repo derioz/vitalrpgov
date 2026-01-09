@@ -35,8 +35,8 @@ export default function DocketList() {
 
     if (dockets.length === 0) {
         return (
-            <div className="text-center p-8 border border-white/5 rounded-2xl bg-slate-900/30">
-                <FaGavel className="mx-auto text-4xl text-slate-700 mb-3" />
+            <div className="text-center p-8 border border-slate-200 dark:border-white/5 rounded-2xl bg-white/50 dark:bg-slate-900/30">
+                <FaGavel className="mx-auto text-4xl text-slate-400 dark:text-slate-700 mb-3" />
                 <p className="text-slate-500">No court cases currently on the docket.</p>
             </div>
         );
@@ -47,12 +47,12 @@ export default function DocketList() {
             {dockets.map((docket) => (
                 <div
                     key={docket.id}
-                    className="relative bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 hover:border-amber-500/30 transition-all duration-300 group overflow-hidden"
+                    className="relative bg-white/50 dark:bg-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-white/5 rounded-2xl p-6 hover:border-amber-500/30 transition-all duration-300 group overflow-hidden"
                 >
                     {/* Status Strip */}
                     <div className={`absolute top-0 left-0 w-1 h-full ${docket.status === 'Scheduled' ? 'bg-blue-500' :
-                            docket.status === 'Concluded' ? 'bg-green-500' :
-                                'bg-red-500'
+                        docket.status === 'Concluded' ? 'bg-green-500' :
+                            'bg-red-500'
                         }`} />
 
                     <div className="flex flex-col md:flex-row gap-6 justify-between items-start">
@@ -62,19 +62,19 @@ export default function DocketList() {
                                     {docket.caseNumber}
                                 </span>
                                 <span className={`text-xs font-bold uppercase tracking-wider ${docket.status === 'Scheduled' ? 'text-blue-400' :
-                                        docket.status === 'Concluded' ? 'text-green-400' :
-                                            'text-red-400'
+                                    docket.status === 'Concluded' ? 'text-green-400' :
+                                        'text-red-400'
                                     }`}>
                                     {docket.status}
                                 </span>
                             </div>
 
-                            <h3 className="text-xl font-bold text-slate-100 group-hover:text-amber-400 transition-colors mb-2">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors mb-2">
                                 {docket.title}
                             </h3>
 
                             {docket.description && (
-                                <p className="text-slate-400 text-sm mb-4 line-clamp-2 md:line-clamp-none">
+                                <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 line-clamp-2 md:line-clamp-none">
                                     {docket.description}
                                 </p>
                             )}
@@ -88,11 +88,11 @@ export default function DocketList() {
 
                         {/* Date/Time/Loc Block */}
                         <div className="flex flex-col gap-2 min-w-[200px] md:text-right">
-                            <div className="flex items-center gap-2 md:justify-end text-slate-300">
+                            <div className="flex items-center gap-2 md:justify-end text-slate-700 dark:text-slate-300">
                                 <FaCalendarAlt className="text-amber-500" />
                                 <span className="font-bold">{new Date(docket.date).toLocaleDateString()}</span>
                             </div>
-                            <div className="flex items-center gap-2 md:justify-end text-slate-400 text-sm">
+                            <div className="flex items-center gap-2 md:justify-end text-slate-500 dark:text-slate-400 text-sm">
                                 <FaClock className="text-amber-500" />
                                 <span>{docket.time}</span>
                             </div>

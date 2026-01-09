@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
     FaChartPie,
     FaGavel,
@@ -63,7 +63,11 @@ const SidebarSection = ({ title, children }: { title: string, children: React.Re
 
 export default function AdminSidebar() {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const { signOut, userProfile, loading } = useAuth();
+
+    // Helper to check query param safely
+    const hasParam = (key: string, value: string) => searchParams.get(key) === value;
 
     const isActive = (path: string) => {
         if (path === '/admin' && pathname === '/admin') return true;
@@ -112,36 +116,78 @@ export default function AdminSidebar() {
                 {/* DOJ Section */}
                 {hasDoj && (
                     <SidebarSection title="Justice Department">
-                        <SidebarItem icon={FaBullhorn} label="Announcements" href="/admin/announcements?dept=DOJ" active={pathname.includes('announcements') && (window.location.search.includes('DOJ') || !window.location.search)} />
+                        <SidebarItem
+                            icon={FaBullhorn}
+                            label="Announcements"
+                            href="/admin/announcements?dept=DOJ"
+                            active={pathname.includes('announcements') && (hasParam('dept', 'DOJ') || !searchParams.get('dept'))}
+                        />
                         <SidebarItem icon={FaLink} label="Resources" href="/admin/doj/resources" active={isActive('/admin/doj/resources')} />
                         <SidebarItem icon={FaGavel} label="Court Dockets" href="/admin/doj/dockets" active={isActive('/admin/doj/dockets')} />
                         <SidebarItem icon={FaBook} label="Records Database" href="/admin/records" active={isActive('/admin/records')} />
                         <SidebarItem icon={FaGavel} label="Legislation" href="/admin/laws" active={isActive('/admin/laws')} />
                         <SidebarItem icon={FaBalanceScale} label="Bar Association" href="/admin/bar" active={isActive('/admin/bar')} />
                         <SidebarItem icon={FaExclamationCircle} label="Complaints" href="/admin/complaints" active={isActive('/admin/complaints')} />
-                        <SidebarItem icon={FaBriefcase} label="Careers" href="/admin/careers" active={isActive('/admin/careers')} />
+                        <SidebarItem
+                            icon={FaBriefcase}
+                            label="Careers"
+                            href="/admin/careers?dept=DOJ"
+                            active={pathname.includes('careers') && (!searchParams.get('dept') || hasParam('dept', 'DOJ'))}
+                        />
                     </SidebarSection>
                 )}
 
                 {/* LSPD Section */}
                 {hasLspd && (
                     <SidebarSection title="Los Santos Police">
-                        <SidebarItem icon={FaBullhorn} label="Announcements" href="/admin/announcements?dept=LSPD" active={pathname.includes('announcements') && window.location.search.includes('LSPD')} />
-                        {/* Future: Officers, Incident Reports, etc. */}
+                        <SidebarItem
+                            icon={FaBullhorn}
+                            label="Announcements"
+                            href="/admin/announcements?dept=LSPD"
+                            active={pathname.includes('announcements') && hasParam('dept', 'LSPD')}
+                        />
+                        <SidebarItem
+                            icon={FaBriefcase}
+                            label="Careers"
+                            href="/admin/careers?dept=LSPD"
+                            active={pathname.includes('careers') && hasParam('dept', 'LSPD')}
+                        />
                     </SidebarSection>
                 )}
 
                 {/* LSEMS Section */}
                 {hasLsems && (
                     <SidebarSection title="Medical Services">
-                        <SidebarItem icon={FaBullhorn} label="Announcements" href="/admin/announcements?dept=LSEMS" active={pathname.includes('announcements') && window.location.search.includes('LSEMS')} />
+                        <SidebarItem
+                            icon={FaBullhorn}
+                            label="Announcements"
+                            href="/admin/announcements?dept=LSEMS"
+                            active={pathname.includes('announcements') && hasParam('dept', 'LSEMS')}
+                        />
+                        <SidebarItem
+                            icon={FaBriefcase}
+                            label="Careers"
+                            href="/admin/careers?dept=LSEMS"
+                            active={pathname.includes('careers') && hasParam('dept', 'LSEMS')}
+                        />
                     </SidebarSection>
                 )}
 
                 {/* SAFD Section */}
                 {hasSafd && (
                     <SidebarSection title="San Andreas Fire">
-                        <SidebarItem icon={FaBullhorn} label="Announcements" href="/admin/announcements?dept=SAFD" active={pathname.includes('announcements') && window.location.search.includes('SAFD')} />
+                        <SidebarItem
+                            icon={FaBullhorn}
+                            label="Announcements"
+                            href="/admin/announcements?dept=SAFD"
+                            active={pathname.includes('announcements') && hasParam('dept', 'SAFD')}
+                        />
+                        <SidebarItem
+                            icon={FaBriefcase}
+                            label="Careers"
+                            href="/admin/careers?dept=SAFD"
+                            active={pathname.includes('careers') && hasParam('dept', 'SAFD')}
+                        />
                     </SidebarSection>
                 )}
 

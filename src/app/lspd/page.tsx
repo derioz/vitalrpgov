@@ -1,15 +1,16 @@
 "use client";
 
+import FactionJobs from '@/components/FactionJobs';
 import FactionAnnouncements from '@/components/FactionAnnouncements';
 import RoleGate from '@/components/RoleGate';
 import FactionQuickNav from '@/components/FactionQuickNav';
-import { FaBullhorn, FaUserSecret, FaNewspaper, FaShieldAlt, FaIdCard, FaCar, FaGavel, FaPhone, FaChevronRight, FaBook } from 'react-icons/fa';
+import { FaBullhorn, FaUserSecret, FaNewspaper, FaShieldAlt, FaIdCard, FaCar, FaGavel, FaPhone, FaChevronRight, FaBook, FaBriefcase } from 'react-icons/fa';
 
 export default function LSPDPage() {
     // No local fetch needed anymore
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200 relative overflow-hidden font-sans selection:bg-blue-500/30">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 relative overflow-hidden font-sans selection:bg-blue-500/30">
 
             {/* Ambient Background Glows */}
             <div className="fixed top-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-blue-600/10 rounded-full blur-[150px] pointer-events-none" />
@@ -24,7 +25,7 @@ export default function LSPDPage() {
                             <span className="w-8 h-[1px] bg-blue-500"></span>
                             Official Portal
                         </div>
-                        <h1 className="text-7xl md:text-9xl font-black text-white tracking-tighter leading-[0.9] mix-blend-overlay opacity-90 animate-fade-in">
+                        <h1 className="text-7xl md:text-9xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] mix-blend-overlay opacity-90 animate-fade-in">
                             LSPD
                             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-300 text-4xl md:text-6xl mt-2 tracking-normal font-bold">
                                 Los Santos Police Dept.
@@ -53,6 +54,16 @@ export default function LSPDPage() {
                             color="blue"
                             icon={FaBullhorn}
                         />
+
+                        {/* Job Offerings */}
+                        <div id="apply">
+                            <FactionJobs
+                                department="LSPD"
+                                title="Career Opportunities"
+                                color="blue"
+                                icon={FaBriefcase}
+                            />
+                        </div>
                     </div>
 
                     {/* Right Column: Interactive panels (4 cols) */}
@@ -67,12 +78,12 @@ export default function LSPDPage() {
                                 { icon: FaNewspaper, label: 'Evidence', color: 'cyan' },
                             ].map((action, i) => (
                                 <button key={i} className={`
-                                    relative overflow-hidden p-6 rounded-2xl bg-slate-800/30 border border-white/5 
+                                    relative overflow-hidden p-6 rounded-2xl bg-white/50 dark:bg-slate-800/30 border border-slate-200 dark:border-white/5 
                                     hover:bg-blue-600 hover:border-blue-500 hover:shadow-[0_0_30px_rgba(37,99,235,0.3)]
                                     transition-all duration-300 group text-left
                                 `}>
-                                    <action.icon className="text-3xl text-slate-400 group-hover:text-white mb-4 transition-colors" />
-                                    <span className="block font-bold text-slate-300 group-hover:text-white transition-colors">{action.label}</span>
+                                    <action.icon className="text-3xl text-slate-500 dark:text-slate-400 group-hover:text-white mb-4 transition-colors" />
+                                    <span className="block font-bold text-slate-700 dark:text-slate-300 group-hover:text-white transition-colors">{action.label}</span>
                                     <FaChevronRight className="absolute bottom-4 right-4 text-white/0 group-hover:text-white/100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300" />
                                 </button>
                             ))}

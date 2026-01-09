@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getAllDocuments, deleteDocument } from "@/lib/firestoreUtils";
 import Link from "next/link";
 import { FaBriefcase, FaPlus, FaTrash, FaBuilding, FaClock } from "react-icons/fa";
+import { useSearchParams } from "next/navigation";
 
 interface Job {
     id: string;
@@ -14,23 +15,34 @@ interface Job {
 export default function AdminCareersPage() {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
-
-    const fetchJobs = async () => {
-        const data = await getAllDocuments<Job>("jobs");
-        setJobs(data);
-        setLoading(false);
-    };
+    const [deptFilter, setDeptFilter] = useState<string | null>(null);
+    const searchParams = useSearchParams();
 
     useEffect(() => {
-        fetchJobs();
-    }, []);
+        const dept = searchParams.get('dept');
+        setDeptFilter(dept);
+        fetchJobs(dept);
+    }, [searchParams]);
+
+    const fetchJobs = async (dept: string | null) => {
+        const data = await getAllDocuments<Job>("jobs");
+        if (dept) {
+            setJobs(data.filter(j => j.department === dept));
+        } else {
+            setJobs(data);
+        }
+        setLoading(false);
+    };
 
     const handleDelete = async (id: string) => {
         if (confirm("Delete this job posting?")) {
             await deleteDocument("jobs", id);
-            fetchJobs();
+            // Refresh with current filter
+            fetchJobs(searchParams.get('dept'));
         }
     };
+
+    const postLink = deptFilter ? `/admin/careers/new?dept=${deptFilter}` : "/admin/careers/new";
 
     return (
         <div className="p-8">
@@ -40,12 +52,16 @@ export default function AdminCareersPage() {
                         <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600">
                             <FaBriefcase size={24} />
                         </div>
-                        Manage Careers
+                        {deptFilter ? `${deptFilter} Careers` : 'Manage Careers'}
                     </h1>
-                    <p className="text-slate-500 mt-1 ml-12">Post and manage job openings across government departments.</p>
+                    <p className="text-slate-500 mt-1 ml-12">
+                        {deptFilter
+                            ? `Manage job openings specifically for ${deptFilter}.`
+                            : 'Post and manage job openings across all departments.'}
+                    </p>
                 </div>
                 <Link
-                    href="/admin/careers/new"
+                    href={postLink}
                     className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-indigo-500/20 hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
                 >
                     <FaPlus size={14} /> Post Job Openings
@@ -94,7 +110,17 @@ export default function AdminCareersPage() {
                         {jobs.length === 0 && (
                             <div className="p-12 text-center text-slate-400 italic flex flex-col items-center">
                                 <FaBriefcase size={32} className="mb-3 opacity-20" />
-                                No active job listings found.
+                                <div className="flex flex-col items-center mt-2">
+                                    <span>{deptFilter ? `No active job listings found for ${deptFilter}.` : 'No active job listings found.'}</span>
+                                    {deptFilter && (
+                                        <Link
+                                            href={postLink}
+                                            className="text-indigo-500 hover:text-indigo-400 font-bold mt-2 text-sm"
+                                        >
+                                            Create First {deptFilter} Listing
+                                        </Link>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>

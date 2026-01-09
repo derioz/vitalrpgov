@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import ThemeToggle from './ThemeToggle';
 import { useAuth } from '@/context/AuthContext';
-import { FaUserCircle, FaBars, FaTimes } from 'react-icons/fa';
+import { FaUserCircle, FaBars, FaTimes, FaGlobeAmericas, FaBalanceScale, FaShieldAlt, FaAmbulance, FaFire } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 
 const Navbar = () => {
@@ -23,11 +22,42 @@ const Navbar = () => {
     }, []);
 
     const navLinks = [
-        { name: 'Portal', href: '/' },
-        { name: 'DOJ', href: '/doj' },
-        { name: 'LSPD', href: '/lspd' },
-        { name: 'LSEMS', href: '/lsems' },
-        { name: 'SAFD', href: '/safd' },
+        {
+            name: 'DOJ',
+            href: '/doj',
+            icon: FaBalanceScale,
+            color: 'hover:text-[#D4AF37]', // Gold
+            bgColor: 'hover:bg-[#D4AF37]/10',
+            activeColor: 'text-[#D4AF37]',
+            activeBg: 'bg-[#D4AF37]/10'
+        },
+        {
+            name: 'LSPD',
+            href: '/lspd',
+            icon: FaShieldAlt,
+            color: 'hover:text-blue-500',
+            bgColor: 'hover:bg-blue-500/10',
+            activeColor: 'text-blue-500',
+            activeBg: 'bg-blue-500/10'
+        },
+        {
+            name: 'LSEMS',
+            href: '/lsems',
+            icon: FaAmbulance,
+            color: 'hover:text-red-500',
+            bgColor: 'hover:bg-red-500/10',
+            activeColor: 'text-red-500',
+            activeBg: 'bg-red-500/10'
+        },
+        {
+            name: 'SAFD',
+            href: '/safd',
+            icon: FaFire,
+            color: 'hover:text-orange-500',
+            bgColor: 'hover:bg-orange-500/10',
+            activeColor: 'text-orange-500',
+            activeBg: 'bg-orange-500/10'
+        },
     ];
 
     return (
@@ -56,18 +86,35 @@ const Navbar = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center gap-1">
-                        <div className="bg-slate-100/50 dark:bg-slate-800/50 backdrop-blur-sm p-1.5 rounded-full border border-slate-200/50 dark:border-slate-700/50 flex items-center mr-4">
+
+                        {/* Main Portal Link - Separated */}
+                        <div className="mr-4 pr-4 border-r border-slate-200 dark:border-slate-700">
+                            <Link
+                                href="/"
+                                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold transition-all duration-300 ${pathname === '/'
+                                    ? 'bg-slate-900 text-white shadow-lg'
+                                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50'
+                                    }`}
+                            >
+                                <FaGlobeAmericas />
+                                Portal
+                            </Link>
+                        </div>
+
+                        {/* Faction Links */}
+                        <div className="bg-slate-100/50 dark:bg-slate-800/50 backdrop-blur-sm p-1 rounded-full border border-slate-200/50 dark:border-slate-700/50 flex items-center mr-4">
                             {navLinks.map((link) => {
-                                const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+                                const isActive = pathname.startsWith(link.href) && link.href !== '/';
                                 return (
                                     <Link
                                         key={link.name}
                                         href={link.href}
-                                        className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${isActive
-                                            ? 'bg-amber-500 text-white shadow-sm'
-                                            : 'text-slate-600 dark:text-slate-300 hover:text-amber-500 hover:bg-slate-200/50 dark:hover:bg-slate-700/50'
+                                        className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 group ${isActive
+                                            ? `${link.activeColor} ${link.activeBg} font-bold shadow-sm`
+                                            : `text-slate-500 dark:text-slate-400 ${link.color} ${link.bgColor}`
                                             }`}
                                     >
+                                        <link.icon className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
                                         {link.name}
                                     </Link>
                                 );
@@ -75,8 +122,6 @@ const Navbar = () => {
                         </div>
 
                         <div className="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
-                            <ThemeToggle />
-
                             {user ? (
                                 <Link
                                     href="/admin"
@@ -113,14 +158,21 @@ const Navbar = () => {
             {/* Mobile Menu Overlay */}
             {mobileMenuOpen && (
                 <div className="absolute top-full left-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-xl p-4 md:hidden flex flex-col gap-2">
+                    <Link
+                        href="/"
+                        className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-white font-bold"
+                        onClick={() => setMobileMenuOpen(false)}
+                    >
+                        <FaGlobeAmericas /> Portal
+                    </Link>
                     {navLinks.map((link) => (
                         <Link
                             key={link.name}
                             href={link.href}
-                            className="block px-4 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium"
+                            className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${link.color} ${link.bgColor} hover:bg-opacity-10`}
                             onClick={() => setMobileMenuOpen(false)}
                         >
-                            {link.name}
+                            <link.icon /> {link.name}
                         </Link>
                     ))}
                     <div className="h-px bg-slate-200 dark:bg-slate-700 my-2"></div>
