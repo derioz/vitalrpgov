@@ -57,7 +57,7 @@ export default function Footer() {
 
                     {/* Creator Credit */}
                     <div className="flex items-center gap-2 px-3 py-1 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-500 hover:bg-slate-800 transition-all cursor-crosshair group shadow-lg shadow-black/20">
-                        <img src="/images/damon_icon.png" alt="Damon" className="w-5 h-5 rounded-full grayscale group-hover:grayscale-0 transition-all" />
+                        <img src="/vitalrpgov/images/damon_icon.png" alt="Damon" className="w-5 h-5 rounded-full grayscale group-hover:grayscale-0 transition-all" />
                         <span className="text-xs font-bold text-slate-500 group-hover:text-indigo-400 tracking-wide uppercase">Created by Damon</span>
                     </div>
 
