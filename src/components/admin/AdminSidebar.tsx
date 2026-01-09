@@ -124,8 +124,6 @@ export default function AdminSidebar() {
                         />
                         <SidebarItem icon={FaLink} label="Resources" href="/admin/doj/resources" active={isActive('/admin/doj/resources')} />
                         <SidebarItem icon={FaGavel} label="Court Dockets" href="/admin/doj/dockets" active={isActive('/admin/doj/dockets')} />
-                        <SidebarItem icon={FaBook} label="Records Database" href="/admin/records" active={isActive('/admin/records')} />
-                        <SidebarItem icon={FaGavel} label="Legislation" href="/admin/laws" active={isActive('/admin/laws')} />
                         <SidebarItem icon={FaBalanceScale} label="Bar Association" href="/admin/bar" active={isActive('/admin/bar')} />
                         <SidebarItem icon={FaExclamationCircle} label="Complaints" href="/admin/complaints" active={isActive('/admin/complaints')} />
                         <SidebarItem

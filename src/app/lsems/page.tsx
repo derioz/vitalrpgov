@@ -49,7 +49,6 @@ export default function LSEMSPage() {
                         {/* Quick Actions Grid */}
                         <div className="grid grid-cols-2 gap-4">
                             {[
-                                { icon: FaNotesMedical, label: 'Records', color: 'red' },
                                 { icon: FaUserMd, label: 'Roster', color: 'pink' },
                                 { icon: FaSyringe, label: 'Pharmacy', color: 'emerald' },
                                 { icon: FaHospital, label: 'Wards', color: 'blue' },

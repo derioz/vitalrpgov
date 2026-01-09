@@ -10,29 +10,9 @@ import { db } from '@/lib/firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 
 export default function DOJPage() {
-    const [showPenalCode, setShowPenalCode] = useState(false);
-    const [showConstitution, setShowConstitution] = useState(false);
-    const [showGovCode, setShowGovCode] = useState(false);
 
-    const [urls, setUrls] = useState({
-        penalCodeUrl: "https://docs.google.com/spreadsheets/d/1NWTm-yAQWqSVP04MgYjMlStI6WmwCSAhC-_F7ns3hDg/edit?gid=1736425476#gid=1736425476",
-        constitutionUrl: "https://drive.google.com/file/d/1OFTLbR2HKYNjbkxSqQqtHUGfeFvtU090/preview",
-        govCodeUrl: "https://docs.google.com/document/d/11l4n-cCRMyWqchl1oyw3DqlKfZZ6TEDAYfnn7sU67jQ/preview"
-    });
+    // Helper for role checks could go here if needed
 
-    useEffect(() => {
-        const unsub = onSnapshot(doc(db, 'settings', 'doj_resources'), (doc) => {
-            if (doc.exists()) {
-                const data = doc.data();
-                setUrls(prev => ({
-                    penalCodeUrl: data.penalCodeUrl || prev.penalCodeUrl,
-                    constitutionUrl: data.constitutionUrl || prev.constitutionUrl,
-                    govCodeUrl: data.govCodeUrl || prev.govCodeUrl
-                }));
-            }
-        });
-        return () => unsub();
-    }, []);
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 relative overflow-hidden font-sans selection:bg-amber-500/30">
@@ -107,34 +87,7 @@ export default function DOJPage() {
                     <div className="lg:col-span-4 space-y-8 animate-fade-in-up delay-300">
 
                         {/* Legal Resources Section */}
-                        <div className="mb-8">
-                            <h3 className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                <span className="w-1 h-3 bg-amber-500 rounded-full"></span>
-                                Legal Resources
-                            </h3>
-                            <div className="space-y-3">
-                                {[
-                                    { icon: FaBook, label: "San Andreas Penal Code", sub: "Official Criminal Code", color: "blue", action: () => setShowPenalCode(true) },
-                                    { icon: FaBalanceScale, label: "State Constitution", sub: "Supreme Law of the Land", color: "red", action: () => setShowConstitution(true) },
-                                    { icon: FaLandmark, label: "Government Code", sub: "Procedures & Statues", color: "green", action: () => setShowGovCode(true) }
-                                ].map((resource, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={resource.action}
-                                        className="w-full flex items-center gap-4 p-4 rounded-xl bg-white/50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-amber-500/30 transition-all duration-300 group text-left relative overflow-hidden"
-                                    >
-                                        <div className={`w-12 h-12 rounded-lg bg-${resource.color}-500/10 flex items-center justify-center text-${resource.color}-500 dark:text-${resource.color}-400 group-hover:text-white group-hover:bg-${resource.color}-500 text-xl transition-all`}>
-                                            <resource.icon />
-                                        </div>
-                                        <div>
-                                            <span className="block font-bold text-slate-700 dark:text-slate-200 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">{resource.label}</span>
-                                            <span className="text-xs text-slate-500 font-mono uppercase tracking-wide">{resource.sub}</span>
-                                        </div>
-                                        <FaChevronRight className="ml-auto text-slate-600 group-hover:text-amber-500 transform group-hover:translate-x-1 transition-all" />
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+
 
                         {/* Department Access Grid */}
                         <div>
@@ -177,113 +130,7 @@ export default function DOJPage() {
                 </div>
             </div>
 
-            {/* Penal Code Modal */}
-            {showPenalCode && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 dark:bg-black/80 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full max-w-[95vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col animate-scale-up">
-
-                        {/* Modal Header */}
-                        <div className="bg-slate-100 dark:bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
-                            <h2 className="text-xl font-bold text-amber-500 flex items-center gap-3">
-                                <FaBook /> San Andreas Penal Code
-                            </h2>
-                            <button
-                                onClick={() => setShowPenalCode(false)}
-                                className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
-                            >
-                                <FaTimes />
-                            </button>
-                        </div>
-
-                        {/* Iframe Content */}
-                        <div className="flex-1 bg-white">
-                            <iframe
-                                src={urls.penalCodeUrl}
-                                className="w-full h-full border-none"
-                                title="San Andreas Penal Code"
-                                allow="autoplay"
-                            />
-                        </div>
-
-                        {/* Modal Footer */}
-                        <div className="bg-slate-950 px-6 py-2 text-center border-t border-slate-800">
-                            <p className="text-xs text-slate-500 font-mono">DOJ NOTICE: This document is managed externally. Updates may take time to reflect.</p>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Constitution Modal */}
-            {showConstitution && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 dark:bg-black/80 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full max-w-[95vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col animate-scale-up">
-
-                        {/* Modal Header */}
-                        <div className="bg-slate-100 dark:bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
-                            <h2 className="text-xl font-bold text-amber-500 flex items-center gap-3">
-                                <FaBalanceScale /> San Andreas Constitution
-                            </h2>
-                            <button
-                                onClick={() => setShowConstitution(false)}
-                                className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
-                            >
-                                <FaTimes />
-                            </button>
-                        </div>
-
-                        {/* Iframe Content */}
-                        <div className="flex-1 bg-white">
-                            <iframe
-                                src={urls.constitutionUrl}
-                                className="w-full h-full border-none"
-                                title="San Andreas Constitution"
-                                allow="autoplay"
-                            />
-                        </div>
-
-                        {/* Modal Footer */}
-                        <div className="bg-slate-950 px-6 py-2 text-center border-t border-slate-800">
-                            <p className="text-xs text-slate-500 font-mono">DOJ NOTICE: This document is managed externally.</p>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Gov Code Modal */}
-            {showGovCode && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 dark:bg-black/80 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full max-w-[95vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col animate-scale-up">
-
-                        {/* Modal Header */}
-                        <div className="bg-slate-100 dark:bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
-                            <h2 className="text-xl font-bold text-amber-500 flex items-center gap-3">
-                                <FaLandmark /> Government Code
-                            </h2>
-                            <button
-                                onClick={() => setShowGovCode(false)}
-                                className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
-                            >
-                                <FaTimes />
-                            </button>
-                        </div>
-
-                        {/* Iframe Content */}
-                        <div className="flex-1 bg-white">
-                            <iframe
-                                src={urls.govCodeUrl}
-                                className="w-full h-full border-none"
-                                title="San Andreas Government Code"
-                                allow="autoplay"
-                            />
-                        </div>
-
-                        {/* Modal Footer */}
-                        <div className="bg-slate-950 px-6 py-2 text-center border-t border-slate-800">
-                            <p className="text-xs text-slate-500 font-mono">DOJ NOTICE: This document is managed externally.</p>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Gov Code Modal Removed */}
 
         </div>
     );

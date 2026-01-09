@@ -73,7 +73,6 @@ export default function LSPDPage() {
                         <div className="grid grid-cols-2 gap-4">
                             {[
                                 { icon: FaIdCard, label: 'MDT', color: 'blue' },
-                                { icon: FaGavel, label: 'Penal Code', color: 'indigo' },
                                 { icon: FaCar, label: 'Impound', color: 'slate' },
                                 { icon: FaNewspaper, label: 'Evidence', color: 'cyan' },
                             ].map((action, i) => (

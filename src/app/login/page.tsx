@@ -26,14 +26,14 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-950 bg-[url('/vitalrpgov/grid-bg.png')] relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-slate-950 bg-[url('/grid-bg.png')] relative overflow-hidden">
             {/* Background Ambience */}
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-900/90 to-black/90 z-0"></div>
 
             <div className="relative z-10 w-full max-w-md p-8 bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl text-center">
 
                 <div className="mb-8 flex justify-center">
-                    <img src="/vitalrpgov/logo.png" alt="Seal" className="w-24 h-24 drop-shadow-2xl animate-pulse-slow" />
+                    <img src="/logo.png" alt="Seal" className="w-24 h-24 drop-shadow-2xl animate-pulse-slow" />
                 </div>
 
                 <h1 className="text-3xl font-serif font-bold text-white mb-2">Government Access</h1>

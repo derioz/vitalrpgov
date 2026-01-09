@@ -123,7 +123,7 @@ export default function FactionAnnouncements({ department, title, color, icon: I
 
                                     {ann.imageUrl && (
                                         <div className="mb-4 rounded-xl overflow-hidden shadow-2xl shadow-black/50 border border-white/5 relative">
-                                            <img src={ann.imageUrl} alt="Announcement" className="w-full h-64 object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out" />
+                                            <img src={ann.imageUrl} alt="Announcement" className="w-full h-32 object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out" />
                                         </div>
                                     )}
 

@@ -1,45 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Legal Faction Portal for Vital RP made by Damon
 
-> **Created by Damon for Vital RP**
+## Changelog
 
-## Deployment
-This project is configured for GitHub Pages deployment using the `/docs` folder strategy.
-1. Run `npm run build` to generate the static site in the `docs` folder.
-2. Push your changes to GitHub.
-3. Go to Repo Settings -> Pages -> Source -> Deploy from a branch.
-4. Select `main` branch and `/docs` folder.
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 2026-01-09
+*   **Removed "Legislation" and "Records Database" References**:
+    *   Removed sidebar links from the Admin Panel (`AdminSidebar.tsx`).
+    *   Removed the "Legal Resources" section (Penal Code, Constitution, Gov Code) from the DOJ page.
+    *   Removed "Penal Code" quick action from the LSPD page.
+    *   Removed "Records" quick action from the LSEMS page.
+*   **Fixed 404 Image Errors**:
+    *   Updated `Navbar.tsx`, `Footer.tsx`, and `login/page.tsx` to fix broken image paths (removed incorrect `/vitalrpgov` prefix).
+*   **Fixed Firebase Permission Errors**:
+    *   Identified missing Firestore rules for `/complaints`, `/bar_members`, `/laws`, and `/dockets`.
+    *   Updated `firestore.rules` with comprehensive security rules to resolve "Missing or insufficient permissions" errors in the Admin Panel.
+*   **UI Adjustments**:
+    *   Resized "Department Announcement" images in `FactionAnnouncements.tsx` (reduced height from `h-64` to `h-32`) for a cleaner look on all faction pages.

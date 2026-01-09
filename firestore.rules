@@ -16,14 +16,13 @@ service cloud.firestore {
     // Check if user has specific role (Crash Proof)
     function hasRole(role) {
       let userDoc = getUserData();
-      // Check if doc exists, has Keys, has Roles key, and contains the role
       return isAuthenticated() && 
              userDoc != null &&
              userDoc.data.keys().hasAny(['roles']) && 
              userDoc.data.roles.hasAny([role]);
     }
 
-    // Check if user is Admin OR Superadmin (Crash Proof)
+    // Check if user is Admin OR Superadmin
     function isAdmin() {
       let userDoc = getUserData();
       return isAuthenticated() && 
@@ -34,6 +33,7 @@ service cloud.firestore {
 
     // --- Collection Rules ---
 
+    // 1. USERS
     match /users/{userId} {
       allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
       allow create: if isAuthenticated() && request.auth.uid == userId; 
@@ -41,9 +41,40 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // 2. COMPLAINTS (Fixes /admin/complaints error)
+    match /complaints/{complaintId} {
+      allow read: if true;
+      allow write: if isAdmin() || hasRole('doj') || hasRole('lspd'); 
+    }
+
+    // 3. BAR ASSOCIATION (Fixes /admin/bar error)
+    match /bar_members/{memberId} {
+      allow read: if true;
+      allow write: if isAdmin() || hasRole('doj');
+    }
+
+    // 4. LAWS (Fixes /admin/laws error)
+    match /laws/{lawId} {
+      allow read: if true;
+      allow write: if isAdmin() || hasRole('doj');
+    }
+
+    // 5. PUBLIC RECORDS
+    match /records/{recordId} {
+        allow read: if true;
+        allow write: if isAdmin() || hasRole('doj');
+    }
+
+    // 6. COURT DOCKETS
+    match /dockets/{docketId} {
+      allow read: if true;
+      allow write: if isAdmin() || hasRole('doj');
+    }
+
+    // 7. ANNOUNCEMENTS
     match /announcements/{announcementId} {
       allow read: if true;
-      allow write: if isAdmin(); // Fallback for Admins
+      allow write: if isAdmin();
       allow create: if isAuthenticated() && (
         isAdmin() ||
         (hasRole('lspd') && request.resource.data.department == 'LSPD') ||
@@ -67,43 +98,30 @@ service cloud.firestore {
       );
     }
     
+    // 8. SETTINGS
     match /settings/{docId} {
       allow read: if true;
       allow write: if isAdmin();
       allow write: if isAuthenticated() && docId == 'doj_resources' && hasRole('doj');
     }
 
-    match /dockets/{docketId} {
-      allow read: if true;
-      allow write: if isAdmin() || hasRole('doj');
-    }
-
-    match /records/{recordId} {
-        allow read: if true;
-        allow write: if isAdmin() || hasRole('doj');
-    }
-
+    // 9. JOBS
     match /jobs/{jobId} {
       allow read: if true;
-      
-      // Explicit Admin Override Check
-      allow create: if isAdmin();
-      
-      // Standard Department Checks
-      allow create: if isAuthenticated() && (
-        (hasRole('lspd') && request.resource.data.department == 'LSPD') ||
-        (hasRole('lsems') && request.resource.data.department == 'LSEMS') ||
-        (hasRole('safd') && request.resource.data.department == 'SAFD') ||
-        (hasRole('doj') && request.resource.data.department == 'DOJ')
+      allow create: if isAdmin() || (
+        isAuthenticated() && (
+          (hasRole('lspd') && request.resource.data.department == 'LSPD') ||
+          (hasRole('lsems') && request.resource.data.department == 'LSEMS') ||
+          (hasRole('safd') && request.resource.data.department == 'SAFD') ||
+          (hasRole('doj') && request.resource.data.department == 'DOJ')
+        )
       );
-
       allow update: if isAdmin() || (
         (hasRole('lspd') && resource.data.department == 'LSPD' && request.resource.data.department == 'LSPD') ||
         (hasRole('lsems') && resource.data.department == 'LSEMS' && request.resource.data.department == 'LSEMS') ||
         (hasRole('safd') && resource.data.department == 'SAFD' && request.resource.data.department == 'SAFD') ||
         (hasRole('doj') && resource.data.department == 'DOJ' && request.resource.data.department == 'DOJ')
       );
-
       allow delete: if isAdmin() || (
         (hasRole('lspd') && resource.data.department == 'LSPD') ||
         (hasRole('lsems') && resource.data.department == 'LSEMS') ||

@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
 import { FaPaperPlane, FaImage, FaBullhorn, FaBold, FaItalic, FaListUl, FaSmile } from 'react-icons/fa';
 
@@ -19,6 +20,8 @@ export default function NewAnnouncementPage() {
 
     const [showMarkdownHelp, setShowMarkdownHelp] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [uploadProgress, setUploadProgress] = useState(false);
 
     // Calculate allowed departments
     const isAdmin = userProfile?.roles?.includes('admin');
@@ -103,8 +106,20 @@ export default function NewAnnouncementPage() {
         setLoading(true);
 
         try {
+            let downloadUrl = '';
+
+            // Handle Image Upload if file selected
+            if (imageFile) {
+                setUploadProgress(true);
+                const storageRef = ref(storage, `announcements/${formData.department}/${Date.now()}_${imageFile.name}`);
+                const snapshot = await uploadBytes(storageRef, imageFile);
+                downloadUrl = await getDownloadURL(snapshot.ref);
+                setUploadProgress(false);
+            }
+
             await addDoc(collection(db, 'announcements'), {
                 ...formData,
+                imageUrl: downloadUrl || formData.imageUrl, // Use uploaded URL or fallback to manual if empty (though we removed manual input, keeping logic safe)
                 author: user?.email || 'Unknown',
                 createdAt: serverTimestamp(),
                 tags: formData.tags.split(',').map(t => t.trim())
@@ -113,6 +128,7 @@ export default function NewAnnouncementPage() {
         } catch (error) {
             console.error("Error creating announcement:", error);
             alert('Failed to create announcement');
+            setUploadProgress(false);
         } finally {
             setLoading(false);
         }
@@ -245,12 +261,18 @@ export default function NewAnnouncementPage() {
                             <FaImage /> Header Image (Optional)
                         </label>
                         <input
-                            type="url"
-                            placeholder="https://imgur.com/..."
-                            value={formData.imageUrl}
-                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                            className="w-full p-4 rounded-xl border border-slate-700 bg-slate-950 text-white focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm placeholder:text-slate-700"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                                if (e.target.files && e.target.files[0]) {
+                                    setImageFile(e.target.files[0]);
+                                }
+                            }}
+                            className="w-full p-4 rounded-xl border border-slate-700 bg-slate-950 text-white focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-slate-800 file:text-blue-400 hover:file:bg-slate-700"
                         />
+                        {imageFile && (
+                            <p className="mt-2 text-xs text-green-400">Selected: {imageFile.name}</p>
+                        )}
                     </div>
 
                     <div>
@@ -282,7 +304,7 @@ export default function NewAnnouncementPage() {
                             disabled={loading}
                             className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-xl flex items-center gap-3 transition-all transform hover:scale-105 shadow-xl shadow-blue-900/20"
                         >
-                            {loading ? 'Publishing...' : <><FaPaperPlane /> Publish to Portal</>}
+                            {loading ? (uploadProgress ? `Uploading...` : 'Publishing...') : <><FaPaperPlane /> Publish to Portal</>}
                         </button>
                     </div>
 
