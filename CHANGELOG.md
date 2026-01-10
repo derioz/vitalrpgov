@@ -12,6 +12,10 @@
     - Introduced **Superadmin** role for global management.
     - Scoped `admin` role to Department Leader (only sees their dept).
     - Restricted "Manage Users" to Superadmins.
+    - **Developer Experience**:
+        - **Changelog**: Added full Markdown rendering support (bold, lists, code blocks).
+    - **Bug Fixes**:
+        - **DOJ Page**: Fixed "File Complaint" modal blurring interaction bugs.
 
 ## v3.2 - Developer Ecosystem (2026-01-09)
 - **Admin Dashboard**: Complete refactor of `/admin` page.

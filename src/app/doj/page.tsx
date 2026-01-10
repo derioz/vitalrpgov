@@ -142,12 +142,6 @@ export default function DOJPage() {
                                     </div>
                                 ))}
                             </div>
-                            {/* Complaint Form Modal */}
-                            <ComplaintForm
-                                department="DOJ"
-                                isOpen={showComplaintForm}
-                                onClose={() => setShowComplaintForm(false)}
-                            />
                         </div>
 
                         {/* Expungement Card */}
@@ -165,6 +159,13 @@ export default function DOJPage() {
             </div>
 
             {/* Gov Code Modal Removed */}
+
+            {/* Complaint Form Modal - Moved to root to avoid transform stacking context issues */}
+            <ComplaintForm
+                department="DOJ"
+                isOpen={showComplaintForm}
+                onClose={() => setShowComplaintForm(false)}
+            />
 
         </div>
     );
