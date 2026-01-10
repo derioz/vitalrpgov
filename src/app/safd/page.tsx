@@ -1,11 +1,16 @@
 "use client";
 
-import { FaFireExtinguisher, FaFire, FaHardHat, FaTruckMonster, FaClipboardCheck, FaTools, FaPhone, FaChevronRight, FaBriefcase } from "react-icons/fa";
+import { useState } from 'react';
+import { FaFireExtinguisher, FaFire, FaHardHat, FaTruckMonster, FaClipboardCheck, FaTools, FaPhone, FaChevronRight, FaBriefcase, FaExclamationTriangle } from "react-icons/fa";
 import FactionAnnouncements from "@/components/FactionAnnouncements";
 import FactionJobs from "@/components/FactionJobs";
 import FactionQuickNav from "@/components/FactionQuickNav";
+import ComplaintForm from "@/components/ComplaintForm";
+
+import FactionRoster from "@/components/FactionRoster";
 
 export default function SAFDPage() {
+    const [showComplaintForm, setShowComplaintForm] = useState(false);
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 relative overflow-hidden font-sans selection:bg-orange-500/30">
 
@@ -61,6 +66,15 @@ export default function SAFDPage() {
                                 icon={FaBriefcase}
                             />
                         </div>
+
+                        {/* Roster */}
+                        <div id="roster">
+                            <FactionRoster
+                                department="SAFD"
+                                title="Active Firefighters"
+                                color="orange"
+                            />
+                        </div>
                     </div>
 
                     {/* Right Column: Interactive panels (4 cols) */}
@@ -68,6 +82,23 @@ export default function SAFDPage() {
 
                         {/* Quick Actions Grid */}
                         <div className="grid grid-cols-2 gap-4">
+                            {/* File Complaint Button */}
+                            <button
+                                onClick={() => setShowComplaintForm(true)}
+                                className="col-span-2 relative overflow-hidden p-6 rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all duration-300 group text-left"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <FaExclamationTriangle className="text-2xl" />
+                                            <span className="font-black text-lg uppercase tracking-wider">File Complaint</span>
+                                        </div>
+                                        <p className="text-amber-100 text-xs font-bold leading-tight max-w-[80%]">Repor safety violation or department issue.</p>
+                                    </div>
+                                    <FaChevronRight className="text-xl transform group-hover:translate-x-1 transition-transform" />
+                                </div>
+                            </button>
+
                             {[
                                 { icon: FaClipboardCheck, label: 'Reports', color: 'blue' },
                                 { icon: FaHardHat, label: 'Roster', color: 'orange' },
@@ -99,6 +130,12 @@ export default function SAFDPage() {
 
                 </div>
             </div>
+            {/* Complaint Form Modal */}
+            <ComplaintForm
+                department="SAFD"
+                isOpen={showComplaintForm}
+                onClose={() => setShowComplaintForm(false)}
+            />
         </div>
     );
 }

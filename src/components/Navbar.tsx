@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { FaUserCircle, FaBars, FaTimes, FaGlobeAmericas, FaBalanceScale, FaShieldAlt, FaAmbulance, FaFire } from 'react-icons/fa';
+import { FaUserCircle, FaBars, FaTimes, FaGlobeAmericas, FaBalanceScale, FaShieldAlt, FaAmbulance, FaFire, FaBell } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 const Navbar = () => {
     const { user, userProfile } = useAuth();
@@ -122,26 +124,33 @@ const Navbar = () => {
                         </div>
 
                         <div className="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
-                            {user ? (
-                                <Link
-                                    href="/admin"
-                                    className="flex items-center gap-2 pl-2 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full transition-colors border border-slate-200 dark:border-slate-700 group"
-                                >
-                                    <div className="w-7 h-7 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                                        <FaUserCircle size={14} />
-                                    </div>
-                                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200 max-w-[100px] truncate">
-                                        {userProfile?.icName ? userProfile.icName.split(' ')[0] : user.email?.split('@')[0]}
-                                    </span>
-                                </Link>
-                            ) : (
-                                <Link
-                                    href="/login"
-                                    className="px-5 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full text-sm font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-                                >
-                                    Login
-                                </Link>
-                            )}
+                            <div className="flex items-center gap-3">
+                                {/* Notification Bell */}
+                                {user && (
+                                    <NotificationBell userId={user.uid} />
+                                )}
+
+                                {user ? (
+                                    <Link
+                                        href="/admin/profile?tab=complaints"
+                                        className="flex items-center gap-2 pl-2 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full transition-colors border border-slate-200 dark:border-slate-700 group"
+                                    >
+                                        <div className="w-7 h-7 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                                            <FaUserCircle size={14} />
+                                        </div>
+                                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200 max-w-[100px] truncate">
+                                            {userProfile?.icName ? userProfile.icName.split(' ')[0] : user.email?.split('@')[0]}
+                                        </span>
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        href="/login"
+                                        className="px-5 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full text-sm font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                                    >
+                                        Login
+                                    </Link>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -186,6 +195,42 @@ const Navbar = () => {
                 </div>
             )}
         </header>
+    );
+};
+
+interface NotificationBellProps {
+    userId: string;
+}
+
+const NotificationBell = ({ userId }: NotificationBellProps) => {
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        if (!userId) return;
+
+        // Listen for unread complaints where current user is the owner
+        const q = query(
+            collection(db, 'complaints'),
+            where('userId', '==', userId),
+            where('isReadByUser', '==', false)
+        );
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            setUnreadCount(snapshot.docs.length);
+        });
+
+        return () => unsubscribe();
+    }, [userId]);
+
+    if (unreadCount === 0) return null;
+
+    return (
+        <Link href="/admin/profile?tab=complaints" className="relative p-2 text-slate-400 hover:text-amber-500 transition-colors">
+            <FaBell size={20} />
+            <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full animate-pulse">
+                {unreadCount}
+            </span>
+        </Link>
     );
 };
 

@@ -1,13 +1,16 @@
 "use client";
 
+import { useState } from 'react';
 import FactionJobs from '@/components/FactionJobs';
 import FactionAnnouncements from '@/components/FactionAnnouncements';
 import RoleGate from '@/components/RoleGate';
 import FactionQuickNav from '@/components/FactionQuickNav';
-import { FaBullhorn, FaUserSecret, FaNewspaper, FaShieldAlt, FaIdCard, FaCar, FaGavel, FaPhone, FaChevronRight, FaBook, FaBriefcase } from 'react-icons/fa';
+import ComplaintForm from '@/components/ComplaintForm';
+import FactionRoster from "@/components/FactionRoster";
+import { FaBullhorn, FaUserSecret, FaNewspaper, FaShieldAlt, FaIdCard, FaCar, FaGavel, FaPhone, FaChevronRight, FaBook, FaBriefcase, FaExclamationTriangle } from 'react-icons/fa';
 
 export default function LSPDPage() {
-    // No local fetch needed anymore
+    const [showComplaintForm, setShowComplaintForm] = useState(false);
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 relative overflow-hidden font-sans selection:bg-blue-500/30">
@@ -64,14 +67,40 @@ export default function LSPDPage() {
                                 icon={FaBriefcase}
                             />
                         </div>
+
+                        {/* Roster */}
+                        <div id="roster">
+                            <FactionRoster
+                                department="LSPD"
+                                title="Staff Roster"
+                                color="blue"
+                            />
+                        </div>
                     </div>
 
                     {/* Right Column: Interactive panels (4 cols) */}
                     <div className="lg:col-span-4 space-y-8 animate-fade-in-up delay-300">
 
-                        {/* Quick Actions Grid */}
                         <div className="grid grid-cols-2 gap-4">
+                            {/* File Complaint Button */}
+                            <button
+                                onClick={() => setShowComplaintForm(true)}
+                                className="col-span-2 relative overflow-hidden p-6 rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all duration-300 group text-left"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <FaExclamationTriangle className="text-2xl" />
+                                            <span className="font-black text-lg uppercase tracking-wider">File Complaint</span>
+                                        </div>
+                                        <p className="text-amber-100 text-xs font-bold leading-tight max-w-[80%]">Submit a formal report to Internal Affairs.</p>
+                                    </div>
+                                    <FaChevronRight className="text-xl transform group-hover:translate-x-1 transition-transform" />
+                                </div>
+                            </button>
+
                             {[
+                                { icon: FaIdCard, label: 'MDT', color: 'blue' },
                                 { icon: FaIdCard, label: 'MDT', color: 'blue' },
                                 { icon: FaCar, label: 'Impound', color: 'slate' },
                                 { icon: FaNewspaper, label: 'Evidence', color: 'cyan' },
@@ -126,6 +155,12 @@ export default function LSPDPage() {
 
                 </div>
             </div>
+            {/* Complaint Form Modal */}
+            <ComplaintForm
+                department="LSPD"
+                isOpen={showComplaintForm}
+                onClose={() => setShowComplaintForm(false)}
+            />
         </div>
     );
 }

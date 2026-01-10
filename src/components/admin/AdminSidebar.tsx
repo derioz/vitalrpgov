@@ -96,7 +96,7 @@ export default function AdminSidebar() {
                     </div>
                     <div>
                         <h2 className="font-bold text-white text-lg leading-none mb-1">Admin Panel</h2>
-                        <span className="text-[10px] uppercase tracking-widest text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">System v3.0</span>
+                        <span className="text-[10px] uppercase tracking-widest text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">System v3.2 (Changelog Added)</span>
                     </div>
                 </div>
             </div>
@@ -125,7 +125,18 @@ export default function AdminSidebar() {
                         <SidebarItem icon={FaLink} label="Resources" href="/admin/doj/resources" active={isActive('/admin/doj/resources')} />
                         <SidebarItem icon={FaGavel} label="Court Dockets" href="/admin/doj/dockets" active={isActive('/admin/doj/dockets')} />
                         <SidebarItem icon={FaBalanceScale} label="Bar Association" href="/admin/bar" active={isActive('/admin/bar')} />
-                        <SidebarItem icon={FaExclamationCircle} label="Complaints" href="/admin/complaints" active={isActive('/admin/complaints')} />
+                        <SidebarItem
+                            icon={FaExclamationCircle}
+                            label="Complaints"
+                            href="/admin/complaints?dept=DOJ"
+                            active={pathname === '/admin/complaints' && hasParam('dept', 'DOJ')}
+                        />
+                        <SidebarItem
+                            icon={FaUserShield}
+                            label="Roster"
+                            href="/admin/roster?dept=DOJ"
+                            active={pathname === '/admin/roster' && hasParam('dept', 'DOJ')}
+                        />
                         <SidebarItem
                             icon={FaBriefcase}
                             label="Careers"
@@ -143,6 +154,18 @@ export default function AdminSidebar() {
                             label="Announcements"
                             href="/admin/announcements?dept=LSPD"
                             active={pathname.includes('announcements') && hasParam('dept', 'LSPD')}
+                        />
+                        <SidebarItem
+                            icon={FaExclamationCircle}
+                            label="Complaints"
+                            href="/admin/complaints?dept=LSPD"
+                            active={pathname === '/admin/complaints' && hasParam('dept', 'LSPD')}
+                        />
+                        <SidebarItem
+                            icon={FaUserShield}
+                            label="Roster"
+                            href="/admin/roster?dept=LSPD"
+                            active={pathname === '/admin/roster' && hasParam('dept', 'LSPD')}
                         />
                         <SidebarItem
                             icon={FaBriefcase}
@@ -163,6 +186,18 @@ export default function AdminSidebar() {
                             active={pathname.includes('announcements') && hasParam('dept', 'LSEMS')}
                         />
                         <SidebarItem
+                            icon={FaExclamationCircle}
+                            label="Complaints"
+                            href="/admin/complaints?dept=LSEMS"
+                            active={pathname === '/admin/complaints' && hasParam('dept', 'LSEMS')}
+                        />
+                        <SidebarItem
+                            icon={FaUserShield}
+                            label="Roster"
+                            href="/admin/roster?dept=LSEMS"
+                            active={pathname === '/admin/roster' && hasParam('dept', 'LSEMS')}
+                        />
+                        <SidebarItem
                             icon={FaBriefcase}
                             label="Careers"
                             href="/admin/careers?dept=LSEMS"
@@ -179,6 +214,18 @@ export default function AdminSidebar() {
                             label="Announcements"
                             href="/admin/announcements?dept=SAFD"
                             active={pathname.includes('announcements') && hasParam('dept', 'SAFD')}
+                        />
+                        <SidebarItem
+                            icon={FaExclamationCircle}
+                            label="Complaints"
+                            href="/admin/complaints?dept=SAFD"
+                            active={pathname === '/admin/complaints' && hasParam('dept', 'SAFD')}
+                        />
+                        <SidebarItem
+                            icon={FaUserShield}
+                            label="Roster"
+                            href="/admin/roster?dept=SAFD"
+                            active={pathname === '/admin/roster' && hasParam('dept', 'SAFD')}
                         />
                         <SidebarItem
                             icon={FaBriefcase}

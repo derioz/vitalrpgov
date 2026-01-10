@@ -1,17 +1,19 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { FaBalanceScale, FaGavel, FaBook, FaBriefcase, FaUniversity, FaUserTimes, FaChevronRight, FaTimes, FaLandmark } from "react-icons/fa";
+import { FaBalanceScale, FaGavel, FaBook, FaBriefcase, FaUniversity, FaUserTimes, FaChevronRight, FaTimes, FaLandmark, FaExclamationTriangle } from "react-icons/fa";
 import FactionAnnouncements from "@/components/FactionAnnouncements";
 import FactionJobs from "@/components/FactionJobs";
 import FactionQuickNav from "@/components/FactionQuickNav";
 import DocketList from "@/components/DocketList";
+import ComplaintForm from "@/components/ComplaintForm";
+import FactionRoster from "@/components/FactionRoster";
 import { db } from '@/lib/firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 
 export default function DOJPage() {
 
-    // Helper for role checks could go here if needed
+    const [showComplaintForm, setShowComplaintForm] = useState(false);
 
 
     return (
@@ -81,6 +83,15 @@ export default function DOJPage() {
                                 icon={FaBriefcase}
                             />
                         </section>
+
+                        {/* Roster */}
+                        <section id="roster">
+                            <FactionRoster
+                                department="DOJ"
+                                title="Department Personnel"
+                                color="amber"
+                            />
+                        </section>
                     </div>
 
                     {/* Right Column: Interactive panels (4 cols) */}
@@ -96,6 +107,23 @@ export default function DOJPage() {
                                 Department Access
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
+                                {/* File Complaint Button */}
+                                <button
+                                    onClick={() => setShowComplaintForm(true)}
+                                    className="col-span-2 relative overflow-hidden p-6 rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all duration-300 group text-left"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex flex-col">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <FaExclamationTriangle className="text-2xl" />
+                                                <span className="font-black text-lg uppercase tracking-wider">File Complaint</span>
+                                            </div>
+                                            <p className="text-amber-100 text-xs font-bold leading-tight max-w-[80%]">File a grievance against DOJ personnel.</p>
+                                        </div>
+                                        <FaChevronRight className="text-xl transform group-hover:translate-x-1 transition-transform" />
+                                    </div>
+                                </button>
+
                                 {[
                                     { icon: FaGavel, label: "Courts", color: "amber", link: "/doj/court" },
                                     { icon: FaBriefcase, label: "The Bar", color: "indigo", link: "/doj/bar" }
@@ -114,6 +142,12 @@ export default function DOJPage() {
                                     </div>
                                 ))}
                             </div>
+                            {/* Complaint Form Modal */}
+                            <ComplaintForm
+                                department="DOJ"
+                                isOpen={showComplaintForm}
+                                onClose={() => setShowComplaintForm(false)}
+                            />
                         </div>
 
                         {/* Expungement Card */}
