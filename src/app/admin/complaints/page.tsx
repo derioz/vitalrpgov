@@ -139,9 +139,18 @@ export default function AdminComplaintsPage() {
         }
     };
 
+    const [viewMode, setViewMode] = useState<'active' | 'history'>('active');
+
+    // ... (existing code, keep filters)
+
+    const filteredComplaints = complaints.filter(c => {
+        const isResolved = ['Resolved', 'Dismissed'].includes(c.status);
+        return viewMode === 'active' ? !isResolved : isResolved;
+    });
+
     return (
         <div className="p-8 h-[calc(100vh-64px)] overflow-hidden flex flex-col">
-            <div className="mb-8 flex justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+            <div className="mb-6 flex flex-col md:flex-row justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold flex items-center gap-3 text-slate-800 dark:text-slate-100">
                         <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-600">
@@ -152,22 +161,46 @@ export default function AdminComplaintsPage() {
                     <p className="text-slate-500 mt-1 ml-12">Adjudicate citizen complaints and conduct internal investigations.</p>
                 </div>
 
-                {isAdmin && (
-                    <div className="flex gap-2">
-                        {['ALL', 'LSPD', 'LSEMS', 'SAFD', 'DOJ'].map(dept => (
-                            <button
-                                key={dept}
-                                onClick={() => setFilterDept(dept)}
-                                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${filterDept === dept
-                                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg'
-                                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400'
-                                    }`}
-                            >
-                                {dept}
-                            </button>
-                        ))}
+                <div className="flex flex-col gap-3 items-end">
+                    {/* View Mode Toggles */}
+                    <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg flex">
+                        <button
+                            onClick={() => setViewMode('active')}
+                            className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${viewMode === 'active'
+                                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
+                                : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+                                }`}
+                        >
+                            Active Cases
+                        </button>
+                        <button
+                            onClick={() => setViewMode('history')}
+                            className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${viewMode === 'history'
+                                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
+                                : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+                                }`}
+                        >
+                            Case History
+                        </button>
                     </div>
-                )}
+
+                    {isAdmin && (
+                        <div className="flex gap-2">
+                            {['ALL', 'LSPD', 'LSEMS', 'SAFD', 'DOJ'].map(dept => (
+                                <button
+                                    key={dept}
+                                    onClick={() => setFilterDept(dept)}
+                                    className={`px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${filterDept === dept
+                                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg'
+                                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400'
+                                        }`}
+                                >
+                                    {dept}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="flex gap-6 flex-1 overflow-hidden">
@@ -175,24 +208,24 @@ export default function AdminComplaintsPage() {
                 <div className={`flex-1 overflow-y-auto pr-2 space-y-4 ${selectedComplaint ? 'hidden md:block md:w-1/3 md:flex-none' : 'w-full'}`}>
                     {loading ? (
                         <div className="text-center py-20 text-slate-500 animate-pulse">Loading cases...</div>
-                    ) : complaints.length === 0 ? (
+                    ) : filteredComplaints.length === 0 ? (
                         <div className="text-center py-20 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
                             <FaInbox size={40} className="mx-auto text-slate-300 mb-4" />
-                            <p className="text-slate-500 font-bold">No active cases.</p>
+                            <p className="text-slate-500 font-bold">No {viewMode} cases found.</p>
                         </div>
                     ) : (
-                        complaints.map(c => (
+                        filteredComplaints.map(c => (
                             <div
                                 key={c.id}
                                 onClick={() => handleView(c)}
                                 className={`cursor-pointer p-5 rounded-2xl border transition-all ${selectedComplaint?.id === c.id
                                     ? 'bg-blue-50 border-blue-500 shadow-md dark:bg-blue-900/20 dark:border-blue-500'
                                     : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700'
-                                    } ${!c.isReadByAdmin ? 'border-l-4 border-l-red-500' : ''}`}
+                                    } ${!c.isReadByAdmin && viewMode === 'active' ? 'border-l-4 border-l-red-500' : ''}`}
                             >
                                 <div className="flex justify-between items-start mb-2">
                                     <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{c.department} • {c.accessCode}</span>
-                                    {!c.isReadByAdmin && <span className="w-2 h-2 rounded-full bg-red-500"></span>}
+                                    {!c.isReadByAdmin && viewMode === 'active' && <span className="w-2 h-2 rounded-full bg-red-500"></span>}
                                 </div>
                                 <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-1">{c.name}</h3>
                                 <p className="text-sm text-slate-500 line-clamp-2">{c.details}</p>
@@ -201,7 +234,7 @@ export default function AdminComplaintsPage() {
                                         c.status === 'Dismissed' ? 'bg-red-100 text-red-700' :
                                             'bg-amber-100 text-amber-700'
                                         }`}>{c.status}</span>
-                                    <span>{c.createdAt?.toDate().toLocaleDateString()}</span>
+                                    <span>{c.createdAt?.toDate ? c.createdAt.toDate().toLocaleDateString() : 'N/A'}</span>
                                 </div>
                             </div>
                         ))
