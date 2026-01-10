@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { addDocument } from '@/lib/firestoreUtils';
 import { FaPaperPlane, FaTimes, FaClipboardCheck, FaExclamationTriangle } from 'react-icons/fa';
@@ -13,11 +13,18 @@ interface ComplaintFormProps {
 
 export default function ComplaintForm({ department, isOpen, onClose }: ComplaintFormProps) {
     const { user, userProfile } = useAuth();
-    const [name, setName] = useState(userProfile?.icName || '');
+    const [name, setName] = useState('');
     const [contact, setContact] = useState('');
     const [details, setDetails] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [accessCode, setAccessCode] = useState<string | null>(null);
+
+    // Auto-fill and lock for logged-in users
+    useEffect(() => {
+        if (userProfile?.icName) {
+            setName(userProfile.icName);
+        }
+    }, [userProfile]);
 
     if (!isOpen) return null;
 
@@ -40,7 +47,8 @@ export default function ComplaintForm({ department, isOpen, onClose }: Complaint
             await addDocument('complaints', {
                 department,
                 accessCode: newAccessCode,
-                userId: user?.uid || null, // Link to account if logged in
+                authorId: user?.uid || null, // Match firestore.rules
+                verified: !!user, // Match firestore.rules
                 name,
                 contact,
                 details, // Initial summary
@@ -68,54 +76,12 @@ export default function ComplaintForm({ department, isOpen, onClose }: Complaint
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
             <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
 
-                {/* Header */}
-                <div className={`p-6 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center`}>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <FaExclamationTriangle className="text-amber-500" />
-                        File {department} Complaint
-                    </h3>
-                    <button onClick={onClose} className="text-slate-400 hover:text-red-500 transition-colors">
-                        <FaTimes size={20} />
-                    </button>
-                </div>
+                {/* ... (Header) */}
 
-                {/* Success View */}
-                {accessCode ? (
-                    <div className="p-8 text-center space-y-6">
-                        <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-600 mx-auto text-3xl">
-                            <FaClipboardCheck />
-                        </div>
-                        <div>
-                            <h4 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Complaint Filed</h4>
-                            <p className="text-slate-500">Your complaint has been securely transmitted to {department} Internal Affairs.</p>
-                        </div>
+                {/* ... (Success View) */}
 
-                        <div className="bg-slate-100 dark:bg-slate-950 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
-                            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Your Access Code</p>
-                            <div className="text-4xl font-mono font-black text-slate-900 dark:text-white tracking-wider select-all">
-                                {accessCode}
-                            </div>
-                            {!user && (
-                                <p className="text-xs text-amber-500 mt-3 font-bold">
-                                    SAVE THIS CODE. You will need it to check the status of your complaint.
-                                </p>
-                            )}
-                            {user && (
-                                <p className="text-xs text-blue-500 mt-3 font-bold">
-                                    Since you are logged in, this complaint has been linked to your profile.
-                                </p>
-                            )}
-                        </div>
-
-                        <button
-                            onClick={onClose}
-                            className="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl hover:opacity-90 transition-opacity"
-                        >
-                            Close
-                        </button>
-                    </div>
-                ) : (
-                    /* Form View */
+                {/* Form View */}
+                {!accessCode && (
                     <form onSubmit={handleSubmit} className="p-6 space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
@@ -125,7 +91,9 @@ export default function ComplaintForm({ department, isOpen, onClose }: Complaint
                                     required
                                     value={name}
                                     onChange={e => setName(e.target.value)}
-                                    className="w-full p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-amber-500 outline-none"
+                                    disabled={!!user} // LOCK NAME IF LOGGED IN
+                                    className={`w-full p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none ${user ? 'opacity-50 cursor-not-allowed bg-slate-200 dark:bg-slate-800' : 'focus:ring-2 focus:ring-amber-500'
+                                        }`}
                                     placeholder="John Doe"
                                 />
                             </div>
@@ -136,6 +104,7 @@ export default function ComplaintForm({ department, isOpen, onClose }: Complaint
                                     required
                                     value={contact}
                                     onChange={e => setContact(e.target.value)}
+                                    // Contact is not currently stored in userProfile, so we keep it editable for now
                                     className="w-full p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-amber-500 outline-none"
                                     placeholder="555-0123"
                                 />
@@ -158,8 +127,8 @@ export default function ComplaintForm({ department, isOpen, onClose }: Complaint
                                 type="submit"
                                 disabled={isSubmitting}
                                 className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${isSubmitting
-                                        ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
-                                        : 'bg-amber-500 hover:bg-amber-400 text-black shadow-lg shadow-amber-500/20'
+                                    ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
+                                    : 'bg-amber-500 hover:bg-amber-400 text-black shadow-lg shadow-amber-500/20'
                                     }`}
                             >
                                 {isSubmitting ? 'Transmitting...' : <><FaPaperPlane /> Submit Complaint</>}

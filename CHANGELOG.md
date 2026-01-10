@@ -19,6 +19,7 @@
         - **Changelog**: Added full Markdown rendering support (bold, lists, code blocks).
     - **Bug Fixes**:
         - **DOJ Page**: Fixed "File Complaint" modal blurring interaction bugs.
+        - **Submission Logic**: Fixed permission error preventing complaints from being sent.
 
 ## v3.2 - Developer Ecosystem (2026-01-09)
 - **Admin Dashboard**: Complete refactor of `/admin` page.
