@@ -15,7 +15,8 @@ import {
     FaUserCircle,
     FaSignOutAlt,
     FaUsers,
-    FaLink
+    FaLink,
+    FaCode
 } from 'react-icons/fa';
 import { useAuth } from '@/context/AuthContext';
 
@@ -117,6 +118,13 @@ export default function AdminSidebar() {
                         label="Dashboard"
                         href="/admin"
                         active={pathname === '/admin'}
+                    />
+                    <SidebarItem
+                        icon={FaCode}
+                        label="Changelog"
+                        href="/admin/changelog"
+                        active={pathname === '/admin/changelog'}
+                        isSystem
                     />
                 </div>
 

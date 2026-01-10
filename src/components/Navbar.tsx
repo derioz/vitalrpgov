@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { FaUserCircle, FaBars, FaTimes, FaGlobeAmericas, FaBalanceScale, FaShieldAlt, FaAmbulance, FaFire, FaBell } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 const Navbar = () => {
@@ -131,17 +131,19 @@ const Navbar = () => {
                                 )}
 
                                 {user ? (
-                                    <Link
-                                        href="/admin/profile?tab=complaints"
-                                        className="flex items-center gap-2 pl-2 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full transition-colors border border-slate-200 dark:border-slate-700 group"
-                                    >
-                                        <div className="w-7 h-7 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                                            <FaUserCircle size={14} />
-                                        </div>
-                                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200 max-w-[100px] truncate">
-                                            {userProfile?.icName ? userProfile.icName.split(' ')[0] : user.email?.split('@')[0]}
-                                        </span>
-                                    </Link>
+                                    <div className="flex items-center gap-2">
+                                        <Link
+                                            href="/admin/profile"
+                                            className="flex items-center gap-2 pl-2 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full transition-colors border border-slate-200 dark:border-slate-700 group"
+                                        >
+                                            <div className="w-7 h-7 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                                                <FaUserCircle size={14} />
+                                            </div>
+                                            <span className="text-sm font-medium text-slate-700 dark:text-slate-200 max-w-[100px] truncate">
+                                                {userProfile?.icName ? userProfile.icName.split(' ')[0] : user.email?.split('@')[0]}
+                                            </span>
+                                        </Link>
+                                    </div>
                                 ) : (
                                     <Link
                                         href="/login"
@@ -204,33 +206,134 @@ interface NotificationBellProps {
 
 const NotificationBell = ({ userId }: NotificationBellProps) => {
     const [unreadCount, setUnreadCount] = useState(0);
+    const [isOpen, setIsOpen] = useState(false);
+    const [notifications, setNotifications] = useState<any[]>([]);
 
     useEffect(() => {
         if (!userId) return;
 
         // Listen for unread complaints where current user is the owner
+        // FIXED: generic 'userId' to 'authorId' to match schema
         const q = query(
             collection(db, 'complaints'),
-            where('userId', '==', userId),
+            where('authorId', '==', userId),
             where('isReadByUser', '==', false)
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             setUnreadCount(snapshot.docs.length);
+            setNotifications(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         });
 
         return () => unsubscribe();
     }, [userId]);
 
-    if (unreadCount === 0) return null;
+    const markAllAsRead = async () => {
+        if (notifications.length === 0) return;
+
+        try {
+            // We can't use writeBatch easily here without importing it or using a utility, 
+            // but we can iterate since the number of UNREAD items per user is likely small.
+            // For robustness, let's just use a promise.all for now or a loop.
+            // Ideally we move this to a utility, but for this component:
+
+            const updates = notifications.map(n =>
+                updateDoc(doc(db, 'complaints', n.id), { isReadByUser: true })
+            );
+            await Promise.all(updates);
+            setIsOpen(false);
+        } catch (error) {
+            console.error("Error marking as read", error);
+        }
+    };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            if (!target.closest('.notification-container')) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     return (
-        <Link href="/admin/profile?tab=complaints" className="relative p-2 text-slate-400 hover:text-amber-500 transition-colors">
-            <FaBell size={20} />
-            <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full animate-pulse">
-                {unreadCount}
-            </span>
-        </Link>
+        <div className="relative notification-container">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className={`relative p-2 transition-colors ${isOpen || unreadCount > 0 ? 'text-amber-500' : 'text-slate-400 hover:text-amber-500'}`}
+            >
+                <FaBell size={20} />
+                {unreadCount > 0 && (
+                    <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full animate-pulse shadow-sm shadow-red-500/50">
+                        {unreadCount}
+                    </span>
+                )}
+            </button>
+
+            {isOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-fade-in-up z-50">
+                    <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-950">
+                        <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">Notifications</h4>
+                        {unreadCount > 0 && (
+                            <button
+                                onClick={markAllAsRead}
+                                className="text-xs font-bold text-blue-500 hover:text-blue-400 transition-colors"
+                            >
+                                Mark all as read
+                            </button>
+                        )}
+                    </div>
+
+                    <div className="max-h-64 overflow-y-auto">
+                        {unreadCount === 0 ? (
+                            <div className="p-8 text-center text-slate-400">
+                                <FaBell className="mx-auto mb-2 opacity-20" size={24} />
+                                <p className="text-xs">No new notifications</p>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                                {notifications.map((n) => (
+                                    <Link
+                                        key={n.id}
+                                        href="/my-complaints"
+                                        onClick={() => setIsOpen(false)}
+                                        className="block p-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                    >
+                                        <div className="flex items-start gap-3">
+                                            <div className={`w-2 h-2 mt-1.5 rounded-full bg-red-500 shrink-0`}></div>
+                                            <div>
+                                                <p className="text-sm font-bold text-slate-800 dark:text-white line-clamp-1">
+                                                    Update on {n.department} Complaint
+                                                </p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                                                    Your complaint status is now <strong>{n.status}</strong>. Click to view details.
+                                                </p>
+                                                <span className="text-[10px] text-slate-400 mt-2 block">
+                                                    {n.updatedAt ? new Date(n.updatedAt).toLocaleDateString() : 'Recently'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="p-3 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 text-center">
+                        <Link
+                            href="/my-complaints"
+                            onClick={() => setIsOpen(false)}
+                            className="text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors block py-1"
+                        >
+                            View All Complaints
+                        </Link>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 };
 

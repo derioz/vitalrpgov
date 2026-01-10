@@ -15,6 +15,10 @@ interface UserProfile {
     icName?: string;
     roles?: string[];
     email?: string;
+    icPhone?: string;
+    discordId?: string;
+    photoURL?: string;
+    bio?: string;
 }
 
 interface AuthContextType {

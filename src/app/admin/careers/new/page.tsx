@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { addDocument } from "@/lib/firestoreUtils";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { FaLock, FaLockOpen } from "react-icons/fa";
 
@@ -13,7 +13,16 @@ const SUGGESTED_TAGS: Record<string, string[]> = {
     "DOJ": ["Judge", "Attorney", "Paralegal", "Clerk", "Justices"],
 };
 
+// Main Component Wrapper for Suspense
 export default function NewJobPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <NewJobForm />
+        </Suspense>
+    );
+}
+
+function NewJobForm() {
     const [title, setTitle] = useState("");
     const [department, setDepartment] = useState("");
     const [salary, setSalary] = useState("");
@@ -22,18 +31,18 @@ export default function NewJobPage() {
     const [newTag, setNewTag] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { userProfile } = useAuth();
     const isAdmin = userProfile?.roles?.some(r => ['admin', 'superadmin'].includes(r));
     const [isLocked, setIsLocked] = useState(false);
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const deptParam = params.get('dept');
+        const deptParam = searchParams.get('dept');
         if (deptParam) {
             setDepartment(deptParam);
             setIsLocked(true);
         }
-    }, []);
+    }, [searchParams]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

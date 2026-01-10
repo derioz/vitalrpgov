@@ -27,10 +27,9 @@ interface ActivityItem {
 }
 
 interface DashboardClientProps {
-    changelogs: ChangelogItem[];
 }
 
-export default function DashboardClient({ changelogs }: DashboardClientProps) {
+export default function DashboardClient() {
     const { userProfile } = useAuth();
 
     // Stats
@@ -126,9 +125,9 @@ export default function DashboardClient({ changelogs }: DashboardClientProps) {
 
             let recentComplaintsQ;
             if (isSuperAdmin) {
-                recentComplaintsQ = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'), limit(5));
+                recentComplaintsQ = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'), limit(50));
             } else if (userDepts.length > 0) {
-                recentComplaintsQ = query(collection(db, 'complaints'), where('department', 'in', userDepts), orderBy('createdAt', 'desc'), limit(5));
+                recentComplaintsQ = query(collection(db, 'complaints'), where('department', 'in', userDepts), orderBy('createdAt', 'desc'), limit(50));
             }
 
             if (recentComplaintsQ) {
@@ -139,7 +138,7 @@ export default function DashboardClient({ changelogs }: DashboardClientProps) {
                         id: doc.id,
                         type: 'complaint',
                         department: data.department,
-                        description: `New Complaint filed against ${data.department}`,
+                        description: `Complaint #${data.accessCode || doc.id.substring(0, 6)}`,
                         timestamp: data.createdAt,
                         author: 'System'
                     });
@@ -148,9 +147,9 @@ export default function DashboardClient({ changelogs }: DashboardClientProps) {
 
             let recentAnnouncementsQ;
             if (isSuperAdmin) {
-                recentAnnouncementsQ = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'), limit(5));
+                recentAnnouncementsQ = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'), limit(50));
             } else if (userDepts.length > 0) {
-                recentAnnouncementsQ = query(collection(db, 'announcements'), where('department', 'in', userDepts), orderBy('createdAt', 'desc'), limit(5));
+                recentAnnouncementsQ = query(collection(db, 'announcements'), where('department', 'in', userDepts), orderBy('createdAt', 'desc'), limit(50));
             }
 
             if (recentAnnouncementsQ) {
@@ -161,7 +160,7 @@ export default function DashboardClient({ changelogs }: DashboardClientProps) {
                         id: doc.id,
                         type: 'announcement',
                         department: data.department,
-                        description: `Announcement posted: "${data.title}"`,
+                        description: `Announcement: "${data.title}"`,
                         timestamp: data.createdAt,
                         author: data.author || 'Admin'
                     });
@@ -187,6 +186,12 @@ export default function DashboardClient({ changelogs }: DashboardClientProps) {
     useEffect(() => {
         fetchData();
     }, [userProfile, isSuperAdmin]);
+
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(activity.length / itemsPerPage);
+    const paginatedActivity = activity.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
         <div className="space-y-8">
@@ -224,83 +229,112 @@ export default function DashboardClient({ changelogs }: DashboardClientProps) {
                 ))}
             </div>
 
-            {/* Recent Activity Feed (Full Width) */}
-            <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-8">
-                <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                    <FaClock className="text-indigo-500" />
-                    Recent Activity
-                </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Recent Activity Feed (2/3 width) */}
+                <div className="lg:col-span-2 bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-8 flex flex-col h-full">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-bold text-white flex items-center gap-3">
+                            <FaClock className="text-indigo-500" />
+                            Recent Activity
+                        </h2>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                disabled={currentPage === 1}
+                                className="px-3 py-1 text-xs font-bold bg-white/5 hover:bg-white/10 disabled:opacity-30 rounded-lg transition-colors border border-white/5"
+                            >
+                                Previous
+                            </button>
+                            <span className="text-xs font-mono self-center text-slate-500">
+                                Page {currentPage} of {totalPages || 1}
+                            </span>
+                            <button
+                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                disabled={currentPage === totalPages || totalPages === 0}
+                                className="px-3 py-1 text-xs font-bold bg-white/5 hover:bg-white/10 disabled:opacity-30 rounded-lg transition-colors border border-white/5"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
 
-                <div className="space-y-4">
-                    {activity.length === 0 && !loading && (
-                        <div className="text-center py-8 text-slate-500 italic">No recent activity found.</div>
-                    )}
+                    <div className="space-y-4 flex-1">
+                        {paginatedActivity.length === 0 && !loading && (
+                            <div className="text-center py-8 text-slate-500 italic">No recent activity found.</div>
+                        )}
 
-                    {activity.map((item) => (
-                        <div key={`${item.type}-${item.id}`} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5 group">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl border border-white/10 
-                                ${item.type === 'complaint' ? 'bg-amber-500/20 text-amber-500' : 'bg-purple-500/20 text-purple-500'}
-                            `}>
-                                {item.type === 'complaint' ? <FaExclamationCircle /> : <FaBullhorn />}
+                        {paginatedActivity.map((item) => (
+                            <div key={`${item.type}-${item.id}`} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5 group">
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl border border-white/10 
+                                    ${item.type === 'complaint' ? 'bg-amber-500/20 text-amber-500' : 'bg-purple-500/20 text-purple-500'}
+                                `}>
+                                    {item.type === 'complaint' ? <FaExclamationCircle /> : <FaBullhorn />}
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-slate-200 font-medium text-sm">
+                                        <span className="text-slate-400 font-bold text-[10px] uppercase mr-2 tracking-wider px-1.5 py-0.5 rounded bg-white/5">{item.department}</span>
+                                        {item.description}
+                                    </p>
+                                    <p className="text-slate-500 text-[10px] mt-1 flex items-center gap-2">
+                                        <span>{item.author}</span>
+                                        <span>•</span>
+                                        <span>
+                                            {item.timestamp?.toDate
+                                                ? item.timestamp.toDate().toLocaleString()
+                                                : typeof item.timestamp === 'string'
+                                                    ? new Date(item.timestamp).toLocaleString()
+                                                    : 'Just now'}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Link
+                                        href={item.type === 'complaint' ? `/admin/complaints?dept=${item.department}` : `/admin/announcements?dept=${item.department}`}
+                                        className="text-[10px] font-bold text-indigo-400 hover:text-indigo-300 uppercase tracking-widest border border-indigo-500/30 px-3 py-1 rounded-lg hover:bg-indigo-500/10 transition-colors"
+                                    >
+                                        View
+                                    </Link>
+                                </div>
                             </div>
-                            <div className="flex-1">
-                                <p className="text-slate-200 font-medium">
-                                    <span className="text-slate-400 font-bold text-xs uppercase mr-2 tracking-wider px-1.5 py-0.5 rounded bg-white/5">{item.department}</span>
-                                    {item.description}
-                                </p>
-                                <p className="text-slate-500 text-xs mt-1 flex items-center gap-2">
-                                    <span>{item.author}</span>
-                                    <span>•</span>
-                                    <span>{item.timestamp?.toDate ? item.timestamp.toDate().toLocaleString() : 'Just now'}</span>
-                                </p>
+                        ))}
+                    </div>
+                </div>
+
+                {/* System Widget (1/3 width) - Replaces Changelog */}
+                <div className="bg-black/20 backdrop-blur-xl border border-pink-500/20 rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500"></div>
+
+                    <div>
+                        <h2 className="text-xl font-bold text-white flex items-center gap-3 mb-4">
+                            <FaCode className="text-pink-500" />
+                            System Updates
+                        </h2>
+                        <p className="text-slate-400 text-sm mb-6">
+                            Stay up to date with the latest features, security patches, and improvements to the San Andreas Government portal.
+                        </p>
+                    </div>
+
+                    <div className="bg-white/5 rounded-2xl p-4 border border-white/5 mb-6">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+                                <img src="/vitalrpgov/images/damon_icon.png" alt="Dev" className="w-full h-full object-cover" />
                             </div>
-                            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Link
-                                    href={item.type === 'complaint' ? `/admin/complaints?dept=${item.department}` : `/admin/announcements?dept=${item.department}`}
-                                    className="text-xs font-bold text-indigo-400 hover:text-indigo-300 uppercase tracking-widest"
-                                >
-                                    View
-                                </Link>
+                            <div>
+                                <p className="text-xs text-slate-300 font-bold">Maintained by Damon</p>
+                                <p className="text-[10px] text-slate-500">Certified Developer</p>
                             </div>
                         </div>
-                    ))}
+                    </div>
+
+                    <Link
+                        href="/admin/changelog"
+                        className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 border border-slate-700 group"
+                    >
+                        View Full Changelog
+                        <FaArrowUp className="rotate-45 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </Link>
                 </div>
             </div>
-
-            {/* Developer Changelog Section (Stateless/Prop-based) */}
-            <div className="bg-black/20 backdrop-blur-xl border border-indigo-500/20 rounded-3xl p-8 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-white flex items-center gap-3">
-                        <FaCode className="text-pink-500" />
-                        Developer Changelog
-                    </h2>
-                    {/* Access to changelog file means we don't need manual add */}
-                </div>
-
-                <div className="space-y-6">
-                    {changelogs.length === 0 && (
-                        <div className="text-center py-6 text-slate-500 italic">No changelogs found.</div>
-                    )}
-
-                    {changelogs.map((log) => (
-                        <div key={log.id} className="relative pl-6 border-l-2 border-slate-700 hover:border-indigo-500 transition-colors">
-                            <span className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-slate-700 border-2 border-slate-900 group-hover:bg-indigo-500"></span>
-                            <div className="flex items-baseline gap-3 mb-1">
-                                <span className="text-sm font-bold text-pink-400 font-mono bg-pink-500/10 px-2 py-0.5 rounded">{log.version}</span>
-                                <h3 className="text-white font-bold">{log.title}</h3>
-                                <span className="text-xs text-slate-500 ml-auto">{log.date || 'Unknown Date'}</span>
-                            </div>
-                            <div className="text-slate-400 text-sm prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900/50 prose-pre:border prose-pre:border-white/10">
-                                <ReactMarkdown>{log.content}</ReactMarkdown>
-                            </div>
-                            <p className="text-slate-500 text-[10px] mt-2 font-mono uppercase">Posted by {log.author}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
         </div>
     );
 }

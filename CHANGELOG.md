@@ -1,5 +1,24 @@
 # Changelog
 
+## v3.4 - Citizen Experience Update (2026-01-09)
+### New Features
+- **User Complaints Dashboard**: New portal (`/my-complaints`) for citizens to track filed complaints.
+- **Notification System**: Real-time badge in Navbar for unread updates on complaints.
+- **Enhanced Profile**: Users can now add IC Phone, Discord, Bio, and upload a Profile Photo.
+- **Roster 2.0**: Complete visual overhaul of Faction Rosters with large cards, hover effects, and detailed info.
+- **Developer Attribution**: Dedicated System Updates page with developer attribution and "Damon" icon.
+
+### Improvements
+- **Complaint Submission**: Improved success flow with direct link to tracking dashboard.
+- **Navbar**: Converted Notification Bell to interactive dropdown with "Mark all as read".
+- **Dashboard**: Implemented pagination (5 per page) for Recent Activity feed and added a "System Updates" widget.
+- **UX**: Removed redundant "My Complaints" text link in favor of the notification center.
+
+### Bug Fixes
+- **Navigation**: Resolved 404 errors during complaint status redirection by ensuring `basePath` compatibility.
+- **Complaint Modal**: Resolved issue where modal would leave page blurred after submission.
+- **Complaint Security**: Enforced stricter author verification to prevent spoofing.
+
 ## v3.3 - Security & Roster Overhaul (2026-01-09)
 ### New Features
 - **Roster Management**:
