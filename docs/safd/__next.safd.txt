@@ -1,4 +1,4 @@
 1:"$Sreact.fragment"
 2:I[39756,["/vitalrpgov/_next/static/chunks/ff1a16fafef87110.js","/vitalrpgov/_next/static/chunks/7340adf74ff47ec0.js"],"default"]
 3:I[37457,["/vitalrpgov/_next/static/chunks/ff1a16fafef87110.js","/vitalrpgov/_next/static/chunks/7340adf74ff47ec0.js"],"default"]
-0:{"buildId":"TIZglp-UGJiSl7B3EgzTl","rsc":["$","$1","c",{"children":[null,["$","div",null,{"className":"bg-slate-50 dark:bg-slate-900 min-h-screen font-sans text-slate-900 dark:text-slate-100","data-theme":"safd","children":["$","div",null,{"className":"flex-1 w-full mx-auto max-w-[1920px]","children":["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]}]}]]}],"loading":null,"isPartial":false}
+0:{"buildId":"7Lfhlhx5gk0FN94lzJRYK","rsc":["$","$1","c",{"children":[null,["$","div",null,{"className":"bg-slate-50 dark:bg-slate-900 min-h-screen font-sans text-slate-900 dark:text-slate-100","data-theme":"safd","children":["$","div",null,{"className":"flex-1 w-full mx-auto max-w-[1920px]","children":["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]}]}]]}],"loading":null,"isPartial":false}

@@ -8,12 +8,10 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // Safer User Data Fetch
     function getUserData() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid));
     }
 
-    // Check if user has specific role (Crash Proof)
     function hasRole(role) {
       let userDoc = getUserData();
       return isAuthenticated() && 
@@ -22,144 +20,160 @@ service cloud.firestore {
              userDoc.data.roles.hasAny([role]);
     }
 
-    // Check if user is Admin OR Superadmin
-    function isAdmin() {
-      let userDoc = getUserData();
-      return isAuthenticated() && 
-             userDoc != null &&
-             userDoc.data.keys().hasAny(['roles']) && 
-             userDoc.data.roles.hasAny(['admin', 'superadmin']);
+    // "admin" is now "Department Leader" foundation
+    function isDeptLeader() {
+      return hasRole('admin');
+    }
+
+    // "superadmin" is the new God Mode
+    function isSuperAdmin() {
+      return hasRole('superadmin');
     }
 
     // --- Collection Rules ---
 
-    // 1. USERS
+    // 1. USERS (Superadmin Only for Management)
     match /users/{userId} {
-      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow read: if isAuthenticated(); // Allow reading profiles for UI
       allow create: if isAuthenticated() && request.auth.uid == userId; 
-      allow update: if isAdmin() || (isAuthenticated() && request.auth.uid == userId);
-      allow delete: if isAdmin();
+      allow update: if isSuperAdmin() || (isAuthenticated() && request.auth.uid == userId);
+      allow delete: if isSuperAdmin();
     }
 
     // 2. COMPLAINTS
     match /complaints/{complaintId} {
-      allow read, write: if true; // Public access required for anonymous reporting and messaging lookup
-      // Future TODO: Lock down read/write with Cloud Functions for secure public access
+      allow read: if true;
+      allow create: if 
+        (request.auth == null && 
+         (!("verified" in request.resource.data) || request.resource.data.verified == false) &&
+         (!("authorId" in request.resource.data) || request.resource.data.authorId == null)
+        ) ||
+        (request.auth != null && 
+         request.resource.data.authorId == request.auth.uid
+        );
+      allow update: if isSuperAdmin() || (isDeptLeader() && hasRole('doj')); 
     }
 
-    // 3. BAR ASSOCIATION (Fixes /admin/bar error)
+    // 3. BAR ASSOCIATION
     match /bar_members/{memberId} {
       allow read: if true;
-      allow write: if isAdmin() || hasRole('doj');
+      allow write: if isSuperAdmin() || (isDeptLeader() && hasRole('doj'));
     }
 
-    // 4. LAWS (Fixes /admin/laws error)
+    // 4. LAWS
     match /laws/{lawId} {
       allow read: if true;
-      allow write: if isAdmin() || hasRole('doj');
+      allow write: if isSuperAdmin() || (isDeptLeader() && hasRole('doj'));
     }
 
     // 5. PUBLIC RECORDS
     match /records/{recordId} {
         allow read: if true;
-        allow write: if isAdmin() || hasRole('doj');
+        allow write: if isSuperAdmin() || (isDeptLeader() && hasRole('doj'));
     }
 
     // 6. COURT DOCKETS
     match /dockets/{docketId} {
       allow read: if true;
-      allow write: if isAdmin() || hasRole('doj');
+      allow write: if isSuperAdmin() || (isDeptLeader() && hasRole('doj'));
     }
 
     // 7. ANNOUNCEMENTS
     match /announcements/{announcementId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isSuperAdmin();
       allow create: if isAuthenticated() && (
-        isAdmin() ||
-        (hasRole('lspd') && request.resource.data.department == 'LSPD') ||
-        (hasRole('lsems') && request.resource.data.department == 'LSEMS') ||
-        (hasRole('safd') && request.resource.data.department == 'SAFD') ||
-        (hasRole('doj') && request.resource.data.department == 'DOJ')
+        isSuperAdmin() ||
+        (isDeptLeader() && hasRole('lspd') && request.resource.data.department == 'LSPD') ||
+        (isDeptLeader() && hasRole('lsems') && request.resource.data.department == 'LSEMS') ||
+        (isDeptLeader() && hasRole('safd') && request.resource.data.department == 'SAFD') ||
+        (isDeptLeader() && hasRole('doj') && request.resource.data.department == 'DOJ')
       );
       allow update: if isAuthenticated() && (
-        isAdmin() ||
-        (hasRole('lspd') && resource.data.department == 'LSPD') ||
-        (hasRole('lsems') && resource.data.department == 'LSEMS') ||
-        (hasRole('safd') && resource.data.department == 'SAFD') ||
-        (hasRole('doj') && resource.data.department == 'DOJ')
+        isSuperAdmin() ||
+        (isDeptLeader() && hasRole('lspd') && resource.data.department == 'LSPD') ||
+        (isDeptLeader() && hasRole('lsems') && resource.data.department == 'LSEMS') ||
+        (isDeptLeader() && hasRole('safd') && resource.data.department == 'SAFD') ||
+        (isDeptLeader() && hasRole('doj') && resource.data.department == 'DOJ')
       );
       allow delete: if isAuthenticated() && (
-        isAdmin() ||
-        (hasRole('lspd') && resource.data.department == 'LSPD') ||
-        (hasRole('lsems') && resource.data.department == 'LSEMS') ||
-        (hasRole('safd') && resource.data.department == 'SAFD') ||
-        (hasRole('doj') && resource.data.department == 'DOJ')
+        isSuperAdmin() ||
+        (isDeptLeader() && hasRole('lspd') && resource.data.department == 'LSPD') ||
+        (isDeptLeader() && hasRole('lsems') && resource.data.department == 'LSEMS') ||
+        (isDeptLeader() && hasRole('safd') && resource.data.department == 'SAFD') ||
+        (isDeptLeader() && hasRole('doj') && resource.data.department == 'DOJ')
       );
     }
     
     // 8. SETTINGS
     match /settings/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
-      allow write: if isAuthenticated() && docId == 'doj_resources' && hasRole('doj');
+      allow write: if isSuperAdmin();
+      allow write: if isDeptLeader() && hasRole('doj') && docId == 'doj_resources';
     }
 
     // 9. JOBS
     match /jobs/{jobId} {
       allow read: if true;
-      allow create: if isAdmin() || (
-        isAuthenticated() && (
+      allow create: if isSuperAdmin() || (
+        isAuthenticated() && isDeptLeader() && (
           (hasRole('lspd') && request.resource.data.department == 'LSPD') ||
           (hasRole('lsems') && request.resource.data.department == 'LSEMS') ||
           (hasRole('safd') && request.resource.data.department == 'SAFD') ||
           (hasRole('doj') && request.resource.data.department == 'DOJ')
         )
       );
-      allow update: if isAdmin() || (
-        (hasRole('lspd') && resource.data.department == 'LSPD' && request.resource.data.department == 'LSPD') ||
-        (hasRole('lsems') && resource.data.department == 'LSEMS' && request.resource.data.department == 'LSEMS') ||
-        (hasRole('safd') && resource.data.department == 'SAFD' && request.resource.data.department == 'SAFD') ||
-        (hasRole('doj') && resource.data.department == 'DOJ' && request.resource.data.department == 'DOJ')
+      allow update: if isSuperAdmin() || (
+        isDeptLeader() && (
+          (hasRole('lspd') && resource.data.department == 'LSPD') ||
+          (hasRole('lsems') && resource.data.department == 'LSEMS') ||
+          (hasRole('safd') && resource.data.department == 'SAFD') ||
+          (hasRole('doj') && resource.data.department == 'DOJ')
+        )
       );
-      allow delete: if isAdmin() || (
-        (hasRole('lspd') && resource.data.department == 'LSPD') ||
-        (hasRole('lsems') && resource.data.department == 'LSEMS') ||
-        (hasRole('safd') && resource.data.department == 'SAFD') ||
-        (hasRole('doj') && resource.data.department == 'DOJ')
+      allow delete: if isSuperAdmin() || (
+        isDeptLeader() && (
+          (hasRole('lspd') && resource.data.department == 'LSPD') ||
+          (hasRole('lsems') && resource.data.department == 'LSEMS') ||
+          (hasRole('safd') && resource.data.department == 'SAFD') ||
+          (hasRole('doj') && resource.data.department == 'DOJ')
+        )
       );
-    // 10. ROSTERS
     }
 
     // 10. ROSTERS
     match /rosters/{rosterId} {
       allow read: if true;
-      allow create: if isAdmin() || (
-        isAuthenticated() && (
+      allow create: if isSuperAdmin() || (
+        isAuthenticated() && isDeptLeader() && (
           (hasRole('lspd') && request.resource.data.department == 'LSPD') ||
           (hasRole('lsems') && request.resource.data.department == 'LSEMS') ||
           (hasRole('safd') && request.resource.data.department == 'SAFD') ||
           (hasRole('doj') && request.resource.data.department == 'DOJ')
         )
       );
-      allow update: if isAdmin() || (
-        (hasRole('lspd') && resource.data.department == 'LSPD' && request.resource.data.department == 'LSPD') ||
-        (hasRole('lsems') && resource.data.department == 'LSEMS' && request.resource.data.department == 'LSEMS') ||
-        (hasRole('safd') && resource.data.department == 'SAFD' && request.resource.data.department == 'SAFD') ||
-        (hasRole('doj') && resource.data.department == 'DOJ' && request.resource.data.department == 'DOJ')
+      allow update: if isSuperAdmin() || (
+        isDeptLeader() && (
+          (hasRole('lspd') && resource.data.department == 'LSPD') ||
+          (hasRole('lsems') && resource.data.department == 'LSEMS') ||
+          (hasRole('safd') && resource.data.department == 'SAFD') ||
+          (hasRole('doj') && resource.data.department == 'DOJ')
+        )
       );
-      allow delete: if isAdmin() || (
-        (hasRole('lspd') && resource.data.department == 'LSPD') ||
-        (hasRole('lsems') && resource.data.department == 'LSEMS') ||
-        (hasRole('safd') && resource.data.department == 'SAFD') ||
-        (hasRole('doj') && resource.data.department == 'DOJ')
+      allow delete: if isSuperAdmin() || (
+        isDeptLeader() && (
+          (hasRole('lspd') && resource.data.department == 'LSPD') ||
+          (hasRole('lsems') && resource.data.department == 'LSEMS') ||
+          (hasRole('safd') && resource.data.department == 'SAFD') ||
+          (hasRole('doj') && resource.data.department == 'DOJ')
+        )
       );
     }
 
     // 11. CHANGELOGS
     match /changelogs/{logId} {
-      allow read: if true; // Visible to all users on dashboard
-      allow write: if isAdmin();
+      allow read: if true; 
+      allow write: if isSuperAdmin();
     }
   }
 }

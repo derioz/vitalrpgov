@@ -1,7 +1,10 @@
 "use client";
 
 import Link from 'next/link';
-import { FaBalanceScale, FaShieldAlt, FaAmbulance, FaFireExtinguisher, FaChevronRight } from 'react-icons/fa';
+import { FaBalanceScale, FaShieldAlt, FaAmbulance, FaFireExtinguisher, FaBug } from 'react-icons/fa';
+import { useAuth } from '@/context/AuthContext';
+import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 /**
  * Minimalist Faction Card
@@ -71,6 +74,23 @@ const MinimalCard = ({ href, color, icon: Icon, title, subtitle, number }: any) 
 };
 
 export default function Home() {
+  const { user } = useAuth();
+
+  const grantSuperAdmin = async () => {
+    if (!user) return alert("Login first!");
+    if (!confirm("DEV: Promote yourself to Superadmin?")) return;
+
+    try {
+      await updateDoc(doc(db, "users", user.uid), {
+        roles: arrayUnion("superadmin", "admin", "lspd") // Granting full suite for testing
+      });
+      alert("Granted! Refresh page.");
+    } catch (e) {
+      console.error(e);
+      alert("Failed. Check console.");
+    }
+  };
+
   return (
     // Fits exactly under the 95px header.
     <div className="h-[calc(100vh-95px)] bg-slate-50 dark:bg-slate-950 flex flex-col relative overflow-hidden">
@@ -86,6 +106,14 @@ export default function Home() {
         <p className="text-slate-500 text-sm font-mono mt-2 tracking-widest uppercase text-opacity-70">
           Official Unified Government Access Point
         </p>
+
+        {/* DEV ONLY BUTTON */}
+        <button
+          onClick={grantSuperAdmin}
+          className="absolute top-4 right-4 text-[10px] bg-red-900/20 text-red-500 px-2 py-1 rounded hover:bg-red-500 hover:text-white transition-colors flex items-center gap-1"
+        >
+          <FaBug /> DEV: Claim Superadmin
+        </button>
       </div>
 
       {/* Faction Panels container */}

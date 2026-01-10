@@ -5,9 +5,10 @@ import { useSearchParams } from 'next/navigation';
 import {
     collection, query, where, orderBy, getDocs, addDoc, deleteDoc, doc, serverTimestamp, updateDoc
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
-import { FaUserShield, FaPlus, FaTrash, FaDiscord, FaIdBadge, FaFilter, FaCamera, FaSave, FaTimes } from 'react-icons/fa';
+import { FaUserShield, FaPlus, FaTrash, FaDiscord, FaIdBadge, FaFilter, FaCamera, FaSave, FaTimes, FaEdit, FaSpinner, FaCloudUploadAlt } from 'react-icons/fa';
 
 interface RosterMember {
     id: string;
@@ -27,14 +28,17 @@ function AdminRosterContent() {
     const [showModal, setShowModal] = useState(false);
 
     // Form State
+    const [editingId, setEditingId] = useState<string | null>(null);
     const [newName, setNewName] = useState('');
     const [newRank, setNewRank] = useState('');
     const [newDiscord, setNewDiscord] = useState('');
     const [newImage, setNewImage] = useState('');
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [submitting, setSubmitting] = useState(false);
 
     const isAdmin = userProfile?.roles?.includes('admin');
-    const userDepts = userProfile?.roles?.filter(r => ['lspd', 'lsems', 'safd', 'doj'].includes(r)) || [];
+    const userDepts = userProfile?.roles?.filter(r => ['lspd', 'lsems', 'safd', 'doj'].includes(r)).map(r => r.toUpperCase()) || [];
+    // Superadmin check will be added later, assuming current admin roles for now
 
     // Auto-set filter
     useEffect(() => {
@@ -42,7 +46,7 @@ function AdminRosterContent() {
         if (deptParam) {
             setFilterDept(deptParam);
         } else if (!isAdmin && userDepts.length === 1) {
-            setFilterDept(userDepts[0].toUpperCase());
+            setFilterDept(userDepts[0]);
         }
     }, [isAdmin, userDepts, searchParams]);
 
@@ -55,7 +59,7 @@ function AdminRosterContent() {
                 q = query(
                     collection(db, 'rosters'),
                     where('department', '==', filterDept),
-                    orderBy('rank', 'asc') // We might need to handle this safer if index missing, but let's try
+                    orderBy('rank', 'asc')
                 );
             } else {
                 q = query(collection(db, 'rosters'));
@@ -66,8 +70,7 @@ function AdminRosterContent() {
                 const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as RosterMember));
                 setMembers(data);
             } catch (err) {
-                // Fallback if combined query/sort fails
-                console.warn("Retrying fetch without sort", err);
+                // Fallback if index missing
                 const qFallback = query(collection(db, 'rosters'), where('department', '==', filterDept));
                 const snapFallback = await getDocs(qFallback);
                 const dataFallback = snapFallback.docs.map(doc => ({ id: doc.id, ...doc.data() } as RosterMember));
@@ -85,38 +88,78 @@ function AdminRosterContent() {
         if (filterDept) fetchMembers();
     }, [filterDept]);
 
-    const handleAddMember = async (e: React.FormEvent) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setImageFile(e.target.files[0]);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newName || !newRank) return;
-
-        // Ensure dept is selected
         if (filterDept === 'ALL') {
-            alert("Please select a specific department to add a member.");
+            alert("Please select a specific department first.");
             return;
         }
 
         setSubmitting(true);
         try {
-            await addDoc(collection(db, 'rosters'), {
+            // 1. Upload Image if selected
+            let imageUrl = newImage;
+            if (imageFile) {
+                const storageRef = ref(storage, `rosters/${filterDept.toLowerCase()}/${Date.now()}_${imageFile.name}`);
+                await uploadBytes(storageRef, imageFile);
+                imageUrl = await getDownloadURL(storageRef);
+            }
+
+            const memberData = {
                 name: newName,
                 rank: newRank,
                 discord: newDiscord,
-                image: newImage,
+                image: imageUrl,
                 department: filterDept,
-                createdAt: serverTimestamp()
-            });
+                updatedAt: serverTimestamp()
+            };
+
+            if (editingId) {
+                // UPDATE
+                await updateDoc(doc(db, 'rosters', editingId), memberData);
+            } else {
+                // CREATE
+                await addDoc(collection(db, 'rosters'), {
+                    ...memberData,
+                    createdAt: serverTimestamp()
+                });
+            }
+
             setShowModal(false);
-            setNewName('');
-            setNewRank('');
-            setNewDiscord('');
-            setNewImage('');
+            resetForm();
             fetchMembers();
         } catch (error) {
-            console.error("Error adding member:", error);
-            alert("Failed to add member.");
+            console.error("Error saving member:", error);
+            alert("Failed to save member.");
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const resetForm = () => {
+        setEditingId(null);
+        setNewName('');
+        setNewRank('');
+        setNewDiscord('');
+        setNewImage('');
+        setImageFile(null);
+    };
+
+    const openEditModal = (member: RosterMember) => {
+        setEditingId(member.id);
+        setNewName(member.name);
+        setNewRank(member.rank);
+        setNewDiscord(member.discord);
+        setNewImage(member.image || '');
+        setFilterDept(member.department); // Ensure context is correct
+        setShowModal(true);
     };
 
     const handleDelete = async (id: string) => {
@@ -163,7 +206,7 @@ function AdminRosterContent() {
                     )}
                     {filterDept !== 'ALL' && (
                         <button
-                            onClick={() => setShowModal(true)}
+                            onClick={() => { resetForm(); setShowModal(true); }}
                             className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20"
                         >
                             <FaPlus /> Add Member
@@ -185,10 +228,18 @@ function AdminRosterContent() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {members.map(member => (
                             <div key={member.id} className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:shadow-xl transition-all hover:-translate-y-1">
-                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-100 dark:border-slate-800 shadow-sm">
+                                    <button
+                                        onClick={() => openEditModal(member)}
+                                        className="p-2 text-indigo-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors"
+                                        title="Edit"
+                                    >
+                                        <FaEdit />
+                                    </button>
                                     <button
                                         onClick={() => handleDelete(member.id)}
                                         className="p-2 text-red-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                        title="Delete"
                                     >
                                         <FaTrash />
                                     </button>
@@ -222,20 +273,21 @@ function AdminRosterContent() {
                 )}
             </div>
 
-            {/* Add Modal */}
+            {/* Add/Edit Modal */}
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
                     <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-scale-in border border-slate-200 dark:border-slate-800">
                         <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
                             <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                <FaPlus className="text-indigo-500" /> Add {filterDept} Member
+                                {editingId ? <FaEdit className="text-amber-500" /> : <FaPlus className="text-indigo-500" />}
+                                {editingId ? 'Edit Member' : `Add ${filterDept} Member`}
                             </h3>
                             <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
                                 <FaTimes size={20} />
                             </button>
                         </div>
 
-                        <form onSubmit={handleAddMember} className="p-6 space-y-4">
+                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             <div>
                                 <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Full Name</label>
                                 <div className="relative">
@@ -281,26 +333,40 @@ function AdminRosterContent() {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Profile Image URL</label>
-                                <div className="relative">
-                                    <FaCamera className="absolute top-3 left-3 text-slate-400" />
-                                    <input
-                                        type="url"
-                                        value={newImage}
-                                        onChange={e => setNewImage(e.target.value)}
-                                        className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2.5 pl-10 pr-4 outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
-                                        placeholder="e.g. https://imgur.com/..."
-                                    />
+                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Portrait Image</label>
+                                <div className="space-y-3">
+                                    {/* Upload Input */}
+                                    <div className="relative">
+                                        <FaCloudUploadAlt className="absolute top-3 left-3 text-slate-400" />
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleFileChange}
+                                            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-10 text-sm text-slate-500 file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                        />
+                                    </div>
+
+                                    {/* OR URL Input */}
+                                    <div className="relative">
+                                        <FaCamera className="absolute top-3 left-3 text-slate-400" />
+                                        <input
+                                            type="url"
+                                            value={newImage}
+                                            onChange={e => setNewImage(e.target.value)}
+                                            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2.5 pl-10 pr-4 outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium text-sm"
+                                            placeholder="OR paste Image URL directly"
+                                        />
+                                    </div>
                                 </div>
-                                <p className="text-[10px] text-slate-400 mt-1">Direct image link (ends in .jpg, .png).</p>
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-500/20 transition-all transform active:scale-95 disabled:opacity-50 disabled:transform-none mt-4"
+                                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-500/20 transition-all transform active:scale-95 disabled:opacity-50 disabled:transform-none mt-4 flex items-center justify-center gap-2"
                             >
-                                {submitting ? 'Saving...' : 'Save to Roster'}
+                                {submitting && <FaSpinner className="animate-spin" />}
+                                {submitting ? 'Saving...' : 'Save Member'}
                             </button>
                         </form>
                     </div>

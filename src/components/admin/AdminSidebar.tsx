@@ -79,11 +79,18 @@ export default function AdminSidebar() {
 
     // Role Checks
     const roles = userProfile?.roles || [];
-    const isAdmin = roles.includes('admin');
-    const hasLspd = isAdmin || roles.includes('lspd');
-    const hasLsems = isAdmin || roles.includes('lsems');
-    const hasSafd = isAdmin || roles.includes('safd');
-    const hasDoj = isAdmin || roles.includes('doj');
+    const isSuperAdmin = roles.includes('superadmin');
+    const isDeptLeader = roles.includes('admin'); // 'admin' role now signifies Dept Leader status
+
+    // Access Logic: Superadmin sees all, Dept Leader sees only their dept, Regular users see nothing in sidebar (usually)
+    // Note: Regular users with just 'lspd' role don't get sidebar functionality in this design unless we want them to? 
+    // The prompt implies "change admin to department leader... that can only view their faction". 
+    // Assuming we only show these sections if they are at least a Dept Leader OR Superadmin.
+
+    const hasLspd = isSuperAdmin || (isDeptLeader && roles.includes('lspd'));
+    const hasLsems = isSuperAdmin || (isDeptLeader && roles.includes('lsems'));
+    const hasSafd = isSuperAdmin || (isDeptLeader && roles.includes('safd'));
+    const hasDoj = isSuperAdmin || (isDeptLeader && roles.includes('doj'));
 
     return (
         <aside className="w-full h-full bg-slate-900/30 backdrop-blur-xl border border-white/5 rounded-3xl flex flex-col overflow-hidden shadow-2xl">
@@ -96,7 +103,7 @@ export default function AdminSidebar() {
                     </div>
                     <div>
                         <h2 className="font-bold text-white text-lg leading-none mb-1">Admin Panel</h2>
-                        <span className="text-[10px] uppercase tracking-widest text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">System v3.2 (Changelog Added)</span>
+                        <span className="text-[10px] uppercase tracking-widest text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">System v3.3 (Secure Roles)</span>
                     </div>
                 </div>
             </div>
@@ -109,27 +116,48 @@ export default function AdminSidebar() {
                         icon={FaChartPie}
                         label="Dashboard"
                         href="/admin"
-                        active={isActive('/admin') && pathname === '/admin'}
+                        active={pathname === '/admin'}
                     />
                 </div>
 
                 {/* DOJ Section */}
                 {hasDoj && (
-                    <SidebarSection title="Justice Department">
+                    <SidebarSection title="Department of Justice">
                         <SidebarItem
-                            icon={FaBullhorn}
-                            label="Announcements"
-                            href="/admin/announcements?dept=DOJ"
-                            active={pathname.includes('announcements') && (hasParam('dept', 'DOJ') || !searchParams.get('dept'))}
+                            icon={FaGavel}
+                            label="Laws & Legislation"
+                            href="/admin/laws"
+                            active={pathname.includes('laws')}
                         />
-                        <SidebarItem icon={FaLink} label="Resources" href="/admin/doj/resources" active={isActive('/admin/doj/resources')} />
-                        <SidebarItem icon={FaGavel} label="Court Dockets" href="/admin/doj/dockets" active={isActive('/admin/doj/dockets')} />
-                        <SidebarItem icon={FaBalanceScale} label="Bar Association" href="/admin/bar" active={isActive('/admin/bar')} />
+                        <SidebarItem
+                            icon={FaBalanceScale}
+                            label="Bar Association"
+                            href="/admin/bar"
+                            active={pathname.includes('bar')}
+                        />
+                        <SidebarItem
+                            icon={FaBook}
+                            label="Public Records"
+                            href="/admin/records"
+                            active={pathname.includes('records')}
+                        />
+                        <SidebarItem
+                            icon={FaLink}
+                            label="Resources"
+                            href="/admin/doj/resources"
+                            active={isActive('/admin/doj/resources')}
+                        />
+                        <SidebarItem
+                            icon={FaGavel}
+                            label="Court Dockets"
+                            href="/admin/doj/dockets"
+                            active={isActive('/admin/doj/dockets')}
+                        />
                         <SidebarItem
                             icon={FaExclamationCircle}
                             label="Complaints"
                             href="/admin/complaints?dept=DOJ"
-                            active={pathname === '/admin/complaints' && hasParam('dept', 'DOJ')}
+                            active={pathname === '/admin/complaints' && (!searchParams.get('dept') || hasParam('dept', 'DOJ'))}
                         />
                         <SidebarItem
                             icon={FaUserShield}
@@ -240,7 +268,7 @@ export default function AdminSidebar() {
 
             {/* User Profile / Footer */}
             <div className="p-4 bg-black/20 border-t border-white/5 space-y-2 backdrop-opacity-50">
-                {isAdmin && (
+                {isSuperAdmin && (
                     <SidebarItem
                         icon={FaUsers}
                         label="Manage Users"

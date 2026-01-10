@@ -1,6 +1,19 @@
 # Changelog
 
-## v3.2 (2026-01-09)
+## v3.3 - Security & Roster Overhaul (2026-01-09)
+### New Features
+- **Roster Management**:
+    - Added image upload support for member portraits.
+    - Added "Edit Member" functionality for fixing mistakes.
+- **Security**:
+    - Implemented strict anti-spoofing for Complaints.
+    - Locked identity fields for logged-in users.
+- **Role System**:
+    - Introduced **Superadmin** role for global management.
+    - Scoped `admin` role to Department Leader (only sees their dept).
+    - Restricted "Manage Users" to Superadmins.
+
+## v3.2 - Developer Ecosystem (2026-01-09)
 - **Admin Dashboard**: Complete refactor of `/admin` page.
   - Replaced dummy stats with real-time data from Firestore (Users, Complaints, Roster, Jobs).
   - Added role-based filtering for statistics and activity feeds.

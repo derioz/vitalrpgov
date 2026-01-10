@@ -3,12 +3,16 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { FaUserShield, FaUserTag, FaSearch, FaCheckCircle, FaTimesCircle, FaShieldAlt, FaIdBadge } from 'react-icons/fa';
+import { useAuth } from '@/context/AuthContext';
+import { FaUserShield, FaUserTag, FaSearch, FaCheckCircle, FaTimesCircle, FaShieldAlt, FaIdBadge, FaCrown } from 'react-icons/fa';
 
 export default function AdminUsersPage() {
+    const { userProfile } = useAuth();
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+
+    const isSuperAdmin = userProfile?.roles?.includes('superadmin');
 
     const fetchUsers = async () => {
         try {
@@ -26,12 +30,16 @@ export default function AdminUsersPage() {
     };
 
     useEffect(() => {
-        fetchUsers();
-    }, []);
+        if (isSuperAdmin) {
+            fetchUsers();
+        } else if (userProfile) {
+            setLoading(false); // Stop loading if profile loaded but not superadmin
+        }
+    }, [isSuperAdmin, userProfile]);
 
     const toggleRole = async (userId: string, role: string, currentRoles: string[] = []) => {
         const userRef = doc(db, "users", userId);
-        let newRoles = [...currentRoles];
+        let newRoles = [...(currentRoles || [])];
 
         if (newRoles.includes(role)) {
             newRoles = newRoles.filter(r => r !== role);
@@ -55,12 +63,23 @@ export default function AdminUsersPage() {
     );
 
     const availableRoles = [
-        { id: 'admin', label: 'Admin', color: 'indigo', icon: FaUserShield },
+        { id: 'superadmin', label: 'Superadmin', color: 'pink', icon: FaCrown },
+        { id: 'admin', label: 'Dept. Leader', color: 'indigo', icon: FaUserShield },
         { id: 'lspd', label: 'LSPD', color: 'blue', icon: FaShieldAlt },
         { id: 'ems', label: 'LSEMS', color: 'red', icon: FaIdBadge },
         { id: 'safd', label: 'SAFD', color: 'orange', icon: FaIdBadge },
         { id: 'doj', label: 'DOJ', color: 'amber', icon: FaUserTag },
     ];
+
+    if (!isSuperAdmin && !loading) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[50vh] text-slate-500">
+                <FaUserShield size={48} className="mb-4 opacity-50" />
+                <h2 className="text-2xl font-bold text-slate-300">Access Denied</h2>
+                <p>You do not have permission to view this page.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
@@ -70,7 +89,7 @@ export default function AdminUsersPage() {
                         <FaUserShield className="text-indigo-500" />
                         User Management
                     </h1>
-                    <p className="text-slate-400 mt-1">Manage registered users and assign faction roles.</p>
+                    <p className="text-slate-400 mt-1">Manage registered users and assign faction roles. <span className="text-pink-500 font-bold ml-2 text-xs uppercase tracking-wider">Superadmin Only</span></p>
                 </div>
 
                 <div className="relative w-full md:w-96">
@@ -101,6 +120,9 @@ export default function AdminUsersPage() {
                                         {user.icName || <span className="text-slate-500 italic">No IC Name Set</span>}
                                     </h3>
                                     <p className="text-slate-500 text-sm font-mono">{user.email}</p>
+                                    <div className="flex gap-2 mt-2">
+                                        {user.roles?.includes('superadmin') && <span className="text-[10px] bg-pink-500/10 text-pink-400 border border-pink-500/20 px-2 py-0.5 rounded uppercase font-bold tracking-wider">Superadmin</span>}
+                                    </div>
                                 </div>
                             </div>
 
@@ -112,7 +134,7 @@ export default function AdminUsersPage() {
                                             key={role.id}
                                             onClick={() => toggleRole(user.id, role.id, user.roles)}
                                             className={`
-                                                flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold transition-all border
+                                                flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-all border uppercase tracking-wide
                                                 ${hasRole
                                                     ? `bg-${role.color}-500/20 border-${role.color}-500/50 text-${role.color}-300 shadow-[0_0_15px_rgba(0,0,0,0.2)]`
                                                     : 'bg-slate-950/50 border-slate-800 text-slate-600 hover:border-slate-600 hover:text-slate-400'
