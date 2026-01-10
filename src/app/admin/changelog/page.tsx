@@ -15,7 +15,7 @@ export default async function ChangelogPage() {
                 <div className="relative z-10 flex items-center gap-6">
                     <div className="w-20 h-20 rounded-full border-4 border-slate-700/50 shadow-xl overflow-hidden relative group">
                         <img
-                            src="/vitalrpgov/images/damon_icon.png"
+                            src="/images/damon_icon.png"
                             alt="Damon"
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         />

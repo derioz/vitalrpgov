@@ -317,7 +317,7 @@ export default function DashboardClient() {
                     <div className="bg-white/5 rounded-2xl p-4 border border-white/5 mb-6">
                         <div className="flex items-center gap-3 mb-2">
                             <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
-                                <img src="/vitalrpgov/images/damon_icon.png" alt="Dev" className="w-full h-full object-cover" />
+                                <img src="/images/damon_icon.png" alt="Dev" className="w-full h-full object-cover" />
                             </div>
                             <div>
                                 <p className="text-xs text-slate-300 font-bold">Maintained by Damon</p>

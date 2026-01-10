@@ -74,7 +74,7 @@ const Navbar = () => {
                     {/* Logo Area */}
                     <Link href="/" className="flex items-center gap-3 group">
                         <div className="relative w-10 h-10 transition-transform duration-300 group-hover:scale-110">
-                            <img src="/vitalrpgov/logo.png" alt="Seal" className="w-full h-full object-contain drop-shadow-sm" />
+                            <img src="/logo.png" alt="Seal" className="w-full h-full object-contain drop-shadow-sm" />
                         </div>
                         <div className="flex flex-col">
                             <span className="font-serif font-bold text-lg leading-tight text-slate-800 dark:text-slate-100 tracking-tight">
