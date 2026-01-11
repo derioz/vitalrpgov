@@ -18,6 +18,35 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-jakarta);
+  @apply tracking-tight antialiased;
+}
+
+@layer base {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold tracking-tighter leading-none text-white;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  h4 {
+    @apply text-lg md:text-xl;
+  }
 }
 
 /* Custom Scrollbar */

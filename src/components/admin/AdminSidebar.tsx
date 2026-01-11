@@ -20,11 +20,14 @@ import {
 } from 'react-icons/fa';
 import { useAuth } from '@/context/AuthContext';
 
-const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false }: any) => (
+import { FaTimes } from 'react-icons/fa';
+
+const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false, onClick }: any) => (
     <Link
         href={href}
+        onClick={onClick}
         className={`
-            group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative overflow-hidden
+            group flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 relative overflow-hidden
             ${active
                 ? 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)] text-white translate-x-1'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -51,9 +54,9 @@ const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false }: any)
 );
 
 const SidebarSection = ({ title, children }: { title: string, children: React.ReactNode }) => (
-    <div className="mb-6">
-        <h3 className="px-4 text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-            <span className="w-1 h-3 bg-slate-700 rounded-full"></span>
+    <div className="mb-3">
+        <h3 className="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+            <span className="w-1 h-2.5 bg-slate-700 rounded-full"></span>
             {title}
         </h3>
         <div className="space-y-1">
@@ -62,7 +65,7 @@ const SidebarSection = ({ title, children }: { title: string, children: React.Re
     </div>
 );
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ onClose }: { onClose?: () => void }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { signOut, userProfile, loading } = useAuth();
@@ -97,16 +100,21 @@ export default function AdminSidebar() {
         <aside className="w-full h-full bg-slate-900/30 backdrop-blur-xl border border-white/5 rounded-3xl flex flex-col overflow-hidden shadow-2xl">
 
             {/* Header Area */}
-            <div className="p-6 border-b border-white/5 bg-white/5">
+            <div className="p-4 border-b border-white/5 bg-white/5 flex justify-between items-center">
                 <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
                         <FaUserShield size={22} />
                     </div>
                     <div>
                         <h2 className="font-bold text-white text-lg leading-none mb-1">Admin Panel</h2>
-                        <span className="text-[10px] uppercase tracking-widest text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">System v3.3 (Secure Roles)</span>
+                        <span className="text-[10px] uppercase tracking-widest text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">System v3.3</span>
                     </div>
                 </div>
+                {onClose && (
+                    <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white p-2">
+                        <FaTimes size={20} />
+                    </button>
+                )}
             </div>
 
             {/* Scrollable Nav */}
@@ -118,6 +126,7 @@ export default function AdminSidebar() {
                         label="Dashboard"
                         href="/admin"
                         active={pathname === '/admin'}
+                        onClick={onClose}
                     />
                     <SidebarItem
                         icon={FaCode}
@@ -125,6 +134,7 @@ export default function AdminSidebar() {
                         href="/admin/changelog"
                         active={pathname === '/admin/changelog'}
                         isSystem
+                        onClick={onClose}
                     />
                 </div>
 
@@ -136,48 +146,56 @@ export default function AdminSidebar() {
                             label="Laws & Legislation"
                             href="/admin/laws"
                             active={pathname.includes('laws')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaBalanceScale}
                             label="Bar Association"
                             href="/admin/bar"
                             active={pathname.includes('bar')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaBook}
                             label="Public Records"
                             href="/admin/records"
                             active={pathname.includes('records')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaLink}
                             label="Resources"
                             href="/admin/doj/resources"
                             active={isActive('/admin/doj/resources')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaGavel}
                             label="Court Dockets"
                             href="/admin/doj/dockets"
                             active={isActive('/admin/doj/dockets')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaExclamationCircle}
                             label="Complaints"
                             href="/admin/complaints?dept=DOJ"
                             active={pathname === '/admin/complaints' && (!searchParams.get('dept') || hasParam('dept', 'DOJ'))}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaUserShield}
                             label="Roster"
                             href="/admin/roster?dept=DOJ"
                             active={pathname === '/admin/roster' && hasParam('dept', 'DOJ')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaBriefcase}
                             label="Careers"
                             href="/admin/careers?dept=DOJ"
                             active={pathname.includes('careers') && (!searchParams.get('dept') || hasParam('dept', 'DOJ'))}
+                            onClick={onClose}
                         />
                     </SidebarSection>
                 )}
@@ -190,24 +208,28 @@ export default function AdminSidebar() {
                             label="Announcements"
                             href="/admin/announcements?dept=LSPD"
                             active={pathname.includes('announcements') && hasParam('dept', 'LSPD')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaExclamationCircle}
                             label="Complaints"
                             href="/admin/complaints?dept=LSPD"
                             active={pathname === '/admin/complaints' && hasParam('dept', 'LSPD')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaUserShield}
                             label="Roster"
                             href="/admin/roster?dept=LSPD"
                             active={pathname === '/admin/roster' && hasParam('dept', 'LSPD')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaBriefcase}
                             label="Careers"
                             href="/admin/careers?dept=LSPD"
                             active={pathname.includes('careers') && hasParam('dept', 'LSPD')}
+                            onClick={onClose}
                         />
                     </SidebarSection>
                 )}
@@ -220,24 +242,28 @@ export default function AdminSidebar() {
                             label="Announcements"
                             href="/admin/announcements?dept=LSEMS"
                             active={pathname.includes('announcements') && hasParam('dept', 'LSEMS')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaExclamationCircle}
                             label="Complaints"
                             href="/admin/complaints?dept=LSEMS"
                             active={pathname === '/admin/complaints' && hasParam('dept', 'LSEMS')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaUserShield}
                             label="Roster"
                             href="/admin/roster?dept=LSEMS"
                             active={pathname === '/admin/roster' && hasParam('dept', 'LSEMS')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaBriefcase}
                             label="Careers"
                             href="/admin/careers?dept=LSEMS"
                             active={pathname.includes('careers') && hasParam('dept', 'LSEMS')}
+                            onClick={onClose}
                         />
                     </SidebarSection>
                 )}
@@ -250,24 +276,28 @@ export default function AdminSidebar() {
                             label="Announcements"
                             href="/admin/announcements?dept=SAFD"
                             active={pathname.includes('announcements') && hasParam('dept', 'SAFD')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaExclamationCircle}
                             label="Complaints"
                             href="/admin/complaints?dept=SAFD"
                             active={pathname === '/admin/complaints' && hasParam('dept', 'SAFD')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaUserShield}
                             label="Roster"
                             href="/admin/roster?dept=SAFD"
                             active={pathname === '/admin/roster' && hasParam('dept', 'SAFD')}
+                            onClick={onClose}
                         />
                         <SidebarItem
                             icon={FaBriefcase}
                             label="Careers"
                             href="/admin/careers?dept=SAFD"
                             active={pathname.includes('careers') && hasParam('dept', 'SAFD')}
+                            onClick={onClose}
                         />
                     </SidebarSection>
                 )}
@@ -283,6 +313,7 @@ export default function AdminSidebar() {
                         href="/admin/users"
                         active={isActive('/admin/users')}
                         isSystem
+                        onClick={onClose}
                     />
                 )}
 
@@ -292,6 +323,7 @@ export default function AdminSidebar() {
                     href="/admin/profile"
                     active={isActive('/admin/profile')}
                     isSystem
+                    onClick={onClose}
                 />
 
                 <button

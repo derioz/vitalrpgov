@@ -27,9 +27,9 @@ export default function SAFDPage() {
                             <span className="w-8 h-[1px] bg-orange-500"></span>
                             Fire & Rescue
                         </div>
-                        <h1 className="text-7xl md:text-9xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] mix-blend-overlay opacity-90 animate-fade-in">
+                        <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] mix-blend-overlay opacity-90 animate-fade-in">
                             SAFD
-                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-300 text-4xl md:text-6xl mt-2 tracking-normal font-bold">
+                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-300 text-2xl md:text-4xl mt-1 tracking-normal font-bold">
                                 San Andreas Fire Dept.
                             </span>
                         </h1>
@@ -78,14 +78,14 @@ export default function SAFDPage() {
                     </div>
 
                     {/* Right Column: Interactive panels (4 cols) */}
-                    <div className="lg:col-span-4 space-y-8 animate-fade-in-up delay-300">
+                    <div className="lg:col-span-4 space-y-6 animate-fade-in-up delay-300">
 
                         {/* Quick Actions Grid */}
                         <div className="grid grid-cols-2 gap-4">
                             {/* File Complaint Button */}
                             <button
                                 onClick={() => setShowComplaintForm(true)}
-                                className="col-span-2 relative overflow-hidden p-6 rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all duration-300 group text-left"
+                                className="col-span-2 relative overflow-hidden p-4 rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all duration-300 group text-left"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="flex flex-col">
@@ -106,7 +106,7 @@ export default function SAFDPage() {
                                 { icon: FaTools, label: 'Equip', color: 'slate' },
                             ].map((action, i) => (
                                 <button key={i} className={`
-                                relative overflow-hidden p-6 rounded-2xl bg-white/50 dark:bg-slate-800/30 border border-slate-200 dark:border-white/5 
+                                relative overflow-hidden p-4 rounded-2xl bg-white/50 dark:bg-slate-800/30 border border-slate-200 dark:border-white/5 
                                 hover:bg-orange-600 hover:border-orange-500 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)]
                                 transition-all duration-300 group text-left
                             `}>

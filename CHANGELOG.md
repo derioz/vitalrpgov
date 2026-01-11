@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.5 - Visual Polish & Optimization (2026-01-10)
+### Visual Overhaul
+- **Global Typography**: Applied "Condensed Infinity" style - tighter tracking (`tracking-tighter`), reduced header sizes (`text-7xl` max), and adjusted line heights for a premium, dense feel.
+- **Layout Compression**: 
+  - Reduced vertical spacing (`py`, `my`) by ~40% across all pages.
+  - Condensed Admin Sidebar items and sections for better information density.
+  - Tightened grid gaps throughout Faction and Admin pages.
+
+### Mobile Responsiveness
+- **Admin Panel**: 
+  - Fixed "Invisible Menu" issue by implementing a dedicated `fixed` mobile navbar (`z-50`).
+  - Added auto-close behavior to sidebar links to improve navigation flow.
+  - Adjusted mobile header sizing and responsiveness for Laws & Users pages.
+- **Faction Pages**: Ensured headers and grid layouts scale correctly on smaller screens.
+
 ## v3.4 - Citizen Experience Update (2026-01-09)
 ### New Features
 - **User Complaints Dashboard**: New portal (`/my-complaints`) for citizens to track filed complaints.
