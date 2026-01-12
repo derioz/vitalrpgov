@@ -97,19 +97,19 @@ export default function FactionJobs({ department, title, color, icon: Icon = FaB
                     <div className="h-40 bg-slate-900/50 animate-pulse rounded-2xl border border-white/5"></div>
                 ) : jobs.length > 0 ? (
                     jobs.map((job) => (
-                        <div key={job.id} className={`group relative bg-white/50 dark:bg-gradient-to-br dark:from-slate-900/80 dark:to-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-white/5 rounded-3xl p-8 hover:border-${color}-500/30 transition-all duration-500 overflow-hidden shadow-sm dark:shadow-none`}>
+                        <div key={job.id} className={`group relative bg-white/5 dark:bg-black/40 backdrop-blur-sm border border-slate-200 dark:border-white/5 rounded-2xl p-6 hover:border-${color}-500/30 transition-all duration-500 overflow-hidden shadow-sm dark:shadow-none`}>
 
                             {/* Hover Glow */}
                             <div className={`absolute inset-0 ${colorClasses.bg}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-overlay`}></div>
 
-                            <div className="flex flex-col md:flex-row gap-6 relative z-10">
+                            <div className="flex flex-col md:flex-row gap-5 relative z-10">
                                 <div className="flex-1">
-                                    <div className="flex items-center gap-4 mb-2">
-                                        <h3 className={`text-2xl font-bold text-slate-800 dark:text-white group-hover:${colorClasses.text} transition-colors`}>
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <h3 className={`text-xl font-bold text-slate-800 dark:text-white group-hover:${colorClasses.text} transition-colors`}>
                                             {job.title}
                                         </h3>
                                         {job.salary && (
-                                            <span className="flex items-center gap-1 text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-full border border-slate-300 dark:border-slate-700">
+                                            <span className="flex items-center gap-1 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-950 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
                                                 <FaMoneyBillWave className="text-green-500" /> {job.salary}
                                             </span>
                                         )}
@@ -117,20 +117,20 @@ export default function FactionJobs({ department, title, color, icon: Icon = FaB
 
                                     {/* Tags Row */}
                                     {job.tags && job.tags.length > 0 && (
-                                        <div className="flex flex-wrap gap-2 mb-4">
+                                        <div className="flex flex-wrap gap-2 mb-3">
                                             {job.tags.map(tag => (
-                                                <span key={tag} className={`text-xs font-bold px-2.5 py-1 rounded-lg bg-${color}-500/10 text-${color}-500 border border-${color}-500/20`}>
+                                                <span key={tag} className={`text-[10px] font-bold px-2 py-0.5 rounded bg-${color}-500/10 text-${color}-500 border border-${color}-500/20`}>
                                                     {tag}
                                                 </span>
                                             ))}
                                         </div>
                                     )}
 
-                                    <div className="prose prose-slate dark:prose-invert prose-lg max-w-none text-slate-600 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors line-clamp-3 mb-6">
+                                    <div className="prose prose-slate dark:prose-invert prose-sm max-w-none text-slate-600 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors line-clamp-2 mb-4">
                                         <ReactMarkdown>{job.description}</ReactMarkdown>
                                     </div>
 
-                                    <button className={`flex items-center gap-2 px-6 py-3 bg-gradient-to-r ${colorClasses.btn} text-white font-bold rounded-xl shadow-lg transition-all transform hover:-translate-y-1`}>
+                                    <button className={`flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r ${colorClasses.btn} text-white text-sm font-bold rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5`}>
                                         Apply Now <FaChevronRight />
                                     </button>
                                 </div>

@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.6 - Dark Mode Redesign (2026-01-11)
+### Visual Overhaul & Dark Theme
+- **Global Dark Mode**: Switched to a pure black (`#000000`) theme for a premium, cinematic aesthetic.
+- **Admin Panel Redesign**:
+  - **Sidebar**: Compacted layout with semi-transparent, darker backgrounds.
+  - **Data Tables**: Reduced padding for higher information density, applied consistent dark styling to Records, Laws, Complaints, Careers, and Bar pages.
+- **Faction Pages**:
+  - Updated **LSPD**, **LSEMS**, **SAFD**, and **DOJ** pages with smaller headers and compact content blocks.
+  - **Components**: Redesigned `FactionRoster`, `FactionAnnouncements`, and `FactionJobs` to align with the new dark theme.
+
 ## v3.5 - Visual Polish & Optimization (2026-01-10)
 ### Visual Overhaul
 - **Global Typography**: Applied "Condensed Infinity" style - tighter tracking (`tracking-tighter`), reduced header sizes (`text-7xl` max), and adjusted line heights for a premium, dense feel.
@@ -11,7 +21,7 @@
 ### Mobile Responsiveness
 - **Admin Panel**: 
   - Fixed "Invisible Menu" issue by implementing a dedicated `fixed` mobile navbar (`z-50`).
-  - Added auto-close behavior to sidebar links to improve navigation flow.
+  - Added auto-close behavior to sidebar links to improve navigation flow (fixed Dashboard link not closing menu).
   - Adjusted mobile header sizing and responsiveness for Laws & Users pages.
 - **Faction Pages**: Ensured headers and grid layouts scale correctly on smaller screens.
 

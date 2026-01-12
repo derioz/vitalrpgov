@@ -68,41 +68,41 @@ export default function AdminCareersPage() {
                 </Link>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div className="bg-white dark:bg-black/40 backdrop-blur-sm rounded-2xl shadow-sm border border-slate-200 dark:border-white/5 overflow-hidden">
                 {loading ? (
                     <div className="p-12 text-center text-slate-500 animate-pulse">Loading active listings...</div>
                 ) : (
-                    <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                    <div className="divide-y divide-slate-100 dark:divide-white/5">
                         {jobs.map(job => (
-                            <div key={job.id} className="p-6 flex items-center justify-between group hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 transition-colors">
-                                <div className="flex items-start gap-5">
-                                    <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500 font-bold border border-indigo-100 dark:border-indigo-800">
-                                        <FaBuilding />
+                            <div key={job.id} className="p-4 flex items-center justify-between group hover:bg-indigo-50/30 dark:hover:bg-white/5 transition-colors">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-500 font-bold border border-indigo-100 dark:border-indigo-500/20">
+                                        <FaBuilding size={14} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 transition-colors">
+                                        <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 transition-colors">
                                             {job.title}
                                         </h3>
-                                        <div className="flex items-center gap-4 mt-1 text-sm text-slate-500">
-                                            <span className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider">
+                                        <div className="flex items-center gap-4 mt-1 text-xs text-slate-500">
+                                            <span className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                                                 {job.department}
                                             </span>
                                             <span className="flex items-center gap-1">
-                                                <FaClock size={12} /> Full Time
+                                                <FaClock size={10} /> Full Time
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <span className="text-sm font-bold text-green-600 px-3 py-1 bg-green-50 dark:bg-green-900/20 rounded-full border border-green-100 dark:border-green-800/30">
+                                    <span className="text-[10px] font-bold text-green-600 px-2 py-0.5 bg-green-50 dark:bg-green-900/20 rounded border border-green-100 dark:border-green-800/30">
                                         Open
                                     </span>
                                     <button
                                         onClick={() => handleDelete(job.id)}
-                                        className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                                        className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                                         title="Remove Listing"
                                     >
-                                        <FaTrash />
+                                        <FaTrash size={12} />
                                     </button>
                                 </div>
                             </div>

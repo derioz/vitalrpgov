@@ -16,7 +16,13 @@ import {
     FaSignOutAlt,
     FaUsers,
     FaLink,
-    FaCode
+    FaCode,
+    FaShieldAlt,
+    FaClipboardList,
+    FaUserTie,
+    FaBuilding,
+    FaDatabase,
+    FaHistory
 } from 'react-icons/fa';
 import { useAuth } from '@/context/AuthContext';
 
@@ -25,7 +31,9 @@ import { FaTimes } from 'react-icons/fa';
 const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false, onClick }: any) => (
     <Link
         href={href}
-        onClick={onClick}
+        onClick={(e) => {
+            if (onClick) onClick();
+        }}
         className={`
             group flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 relative overflow-hidden
             ${active
@@ -97,28 +105,28 @@ export default function AdminSidebar({ onClose }: { onClose?: () => void }) {
     const hasDoj = isSuperAdmin || (isDeptLeader && roles.includes('doj'));
 
     return (
-        <aside className="w-full h-full bg-slate-900/30 backdrop-blur-xl border border-white/5 rounded-3xl flex flex-col overflow-hidden shadow-2xl">
+        <aside className="w-full h-full bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl">
 
             {/* Header Area */}
-            <div className="p-4 border-b border-white/5 bg-white/5 flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                        <FaUserShield size={22} />
+            <div className="h-16 px-4 border-b border-white/5 bg-white/5 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                        <FaShieldAlt size={14} />
                     </div>
                     <div>
-                        <h2 className="font-bold text-white text-lg leading-none mb-1">Admin Panel</h2>
-                        <span className="text-[10px] uppercase tracking-widest text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">System v3.3</span>
+                        <h2 className="font-bold text-white text-sm leading-none mb-0.5">ADMIN PANEL</h2>
+                        <span className="text-[9px] uppercase tracking-widest text-indigo-400">Vital Roleplay</span>
                     </div>
                 </div>
                 {onClose && (
                     <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white p-2">
-                        <FaTimes size={20} />
+                        <FaTimes size={16} />
                     </button>
                 )}
             </div>
 
             {/* Scrollable Nav */}
-            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-8">
+            <div className="flex-1 overflow-y-auto px-3 py-4 custom-scrollbar space-y-6">
 
                 <div className="space-y-1">
                     <SidebarItem

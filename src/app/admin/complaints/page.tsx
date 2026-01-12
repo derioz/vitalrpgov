@@ -150,23 +150,23 @@ export default function AdminComplaintsPage() {
 
     return (
         <div className="p-8 h-[calc(100vh-64px)] overflow-hidden flex flex-col">
-            <div className="mb-6 flex flex-col md:flex-row justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 gap-4">
+            <div className="mb-6 flex flex-col md:flex-row justify-between items-center bg-white dark:bg-black/40 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-white/5 gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold flex items-center gap-3 text-slate-800 dark:text-slate-100">
+                    <h1 className="text-2xl font-bold flex items-center gap-3 text-slate-800 dark:text-slate-100">
                         <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-600">
-                            <FaExclamationCircle size={24} />
+                            <FaExclamationCircle size={20} />
                         </div>
                         Internal Affairs
                     </h1>
-                    <p className="text-slate-500 mt-1 ml-12">Adjudicate citizen complaints and conduct internal investigations.</p>
+                    <p className="text-slate-500 text-sm mt-1 ml-11">Adjudicate citizen complaints and conduct internal investigations.</p>
                 </div>
 
                 <div className="flex flex-col gap-3 items-end">
                     {/* View Mode Toggles */}
-                    <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg flex">
+                    <div className="bg-slate-100 dark:bg-white/5 p-1 rounded-lg flex">
                         <button
                             onClick={() => setViewMode('active')}
-                            className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${viewMode === 'active'
+                            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${viewMode === 'active'
                                 ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
                                 : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
                                 }`}
@@ -175,7 +175,7 @@ export default function AdminComplaintsPage() {
                         </button>
                         <button
                             onClick={() => setViewMode('history')}
-                            className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${viewMode === 'history'
+                            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${viewMode === 'history'
                                 ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
                                 : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
                                 }`}
@@ -190,7 +190,7 @@ export default function AdminComplaintsPage() {
                                 <button
                                     key={dept}
                                     onClick={() => setFilterDept(dept)}
-                                    className={`px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${filterDept === dept
+                                    className={`px-3 py-1.5 rounded-lg font-bold text-[10px] transition-all ${filterDept === dept
                                         ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg'
                                         : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400'
                                         }`}
@@ -205,31 +205,31 @@ export default function AdminComplaintsPage() {
 
             <div className="flex gap-6 flex-1 overflow-hidden">
                 {/* List Column */}
-                <div className={`flex-1 overflow-y-auto pr-2 space-y-4 ${selectedComplaint ? 'hidden md:block md:w-1/3 md:flex-none' : 'w-full'}`}>
+                <div className={`flex-1 overflow-y-auto pr-2 space-y-3 ${selectedComplaint ? 'hidden md:block md:w-1/3 md:flex-none' : 'w-full'}`}>
                     {loading ? (
                         <div className="text-center py-20 text-slate-500 animate-pulse">Loading cases...</div>
                     ) : filteredComplaints.length === 0 ? (
-                        <div className="text-center py-20 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
-                            <FaInbox size={40} className="mx-auto text-slate-300 mb-4" />
-                            <p className="text-slate-500 font-bold">No {viewMode} cases found.</p>
+                        <div className="text-center py-20 bg-slate-50 dark:bg-white/5 rounded-2xl border border-dashed border-slate-300 dark:border-white/10">
+                            <FaInbox size={32} className="mx-auto text-slate-300 mb-4" />
+                            <p className="text-slate-500 font-bold text-sm">No {viewMode} cases found.</p>
                         </div>
                     ) : (
                         filteredComplaints.map(c => (
                             <div
                                 key={c.id}
                                 onClick={() => handleView(c)}
-                                className={`cursor-pointer p-5 rounded-2xl border transition-all ${selectedComplaint?.id === c.id
+                                className={`cursor-pointer p-4 rounded-xl border transition-all ${selectedComplaint?.id === c.id
                                     ? 'bg-blue-50 border-blue-500 shadow-md dark:bg-blue-900/20 dark:border-blue-500'
-                                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700'
+                                    : 'bg-white dark:bg-black/40 border-slate-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700'
                                     } ${!c.isReadByAdmin && viewMode === 'active' ? 'border-l-4 border-l-red-500' : ''}`}
                             >
                                 <div className="flex justify-between items-start mb-2">
-                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{c.department} • {c.accessCode}</span>
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{c.department} • {c.accessCode}</span>
                                     {!c.isReadByAdmin && viewMode === 'active' && <span className="w-2 h-2 rounded-full bg-red-500"></span>}
                                 </div>
-                                <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-1">{c.name}</h3>
-                                <p className="text-sm text-slate-500 line-clamp-2">{c.details}</p>
-                                <div className="flex items-center gap-3 mt-3 text-xs font-mono text-slate-400">
+                                <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-1 text-sm">{c.name}</h3>
+                                <p className="text-xs text-slate-500 line-clamp-2">{c.details}</p>
+                                <div className="flex items-center gap-3 mt-3 text-[10px] font-mono text-slate-400">
                                     <span className={`px-2 py-0.5 rounded ${c.status === 'Resolved' ? 'bg-green-100 text-green-700' :
                                         c.status === 'Dismissed' ? 'bg-red-100 text-red-700' :
                                             'bg-amber-100 text-amber-700'
@@ -243,85 +243,85 @@ export default function AdminComplaintsPage() {
 
                 {/* Detail Column */}
                 {selectedComplaint ? (
-                    <div className="flex-[2] bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-fade-in relative z-10 w-full md:w-auto absolute md:relative inset-0 md:inset-auto">
-                        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+                    <div className="flex-[2] bg-white dark:bg-black/80 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 dark:border-white/10 flex flex-col overflow-hidden animate-fade-in relative z-10 w-full md:w-auto absolute md:relative inset-0 md:inset-auto">
+                        <div className="p-4 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/5">
                             <div>
-                                <button onClick={() => setSelectedComplaint(null)} className="md:hidden text-sm text-slate-500 mb-2">← Back to List</button>
-                                <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <button onClick={() => setSelectedComplaint(null)} className="md:hidden text-xs text-slate-500 mb-2">← Back to List</button>
+                                <h2 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
                                     {selectedComplaint.name}
-                                    <span className="text-sm font-normal text-slate-400 font-mono">({selectedComplaint.contact})</span>
+                                    <span className="text-xs font-normal text-slate-400 font-mono">({selectedComplaint.contact})</span>
                                 </h2>
-                                <div className="text-xs font-mono text-slate-400 mt-1 select-all">Code: {selectedComplaint.accessCode}</div>
+                                <div className="text-[10px] font-mono text-slate-400 mt-0.5 select-all">Code: {selectedComplaint.accessCode}</div>
                             </div>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => handleStatusChange(selectedComplaint.id, 'Resolved')}
-                                    className="p-2 rounded-lg bg-green-100 text-green-600 hover:bg-green-200 transition-colors"
+                                    className="p-1.5 rounded bg-green-100 text-green-600 hover:bg-green-200 transition-colors"
                                     title="Mark Resolved"
                                 >
-                                    <FaCheck />
+                                    <FaCheck size={12} />
                                 </button>
                                 <button
                                     onClick={() => handleStatusChange(selectedComplaint.id, 'Dismissed')}
-                                    className="p-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
+                                    className="p-1.5 rounded bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
                                     title="Dismiss"
                                 >
-                                    <FaTimes />
+                                    <FaTimes size={12} />
                                 </button>
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50 dark:bg-black/20">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-black/20">
                             {/* Original Complaint */}
-                            <div className="bg-amber-50 dark:bg-amber-900/10 p-6 rounded-2xl border border-amber-100 dark:border-amber-900/20">
-                                <h4 className="text-xs font-bold text-amber-600 uppercase mb-2 flex items-center gap-2">
+                            <div className="bg-amber-50 dark:bg-amber-900/10 p-4 rounded-xl border border-amber-100 dark:border-amber-900/20">
+                                <h4 className="text-[10px] font-bold text-amber-600 uppercase mb-2 flex items-center gap-2">
                                     <FaExclamationCircle /> Original Incident Report
                                 </h4>
-                                <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{selectedComplaint.details}</p>
+                                <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">{selectedComplaint.details}</p>
                             </div>
 
                             {/* Thread */}
                             {(selectedComplaint.messages || []).map((msg, idx) => (
                                 <div key={idx} className={`flex ${msg.role === 'official' ? 'justify-end' : 'justify-start'}`}>
-                                    <div className={`max-w-[80%] rounded-2xl p-4 shadow-sm ${msg.role === 'official'
+                                    <div className={`max-w-[85%] rounded-xl p-3 shadow-sm ${msg.role === 'official'
                                         ? 'bg-blue-600 text-white rounded-tr-none'
-                                        : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-tl-none'
+                                        : 'bg-white dark:bg-white/10 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-white/5 rounded-tl-none'
                                         }`}>
-                                        <div className="flex items-center gap-2 mb-2 text-xs opacity-70">
+                                        <div className="flex items-center gap-2 mb-1 text-[10px] opacity-70">
                                             {msg.role === 'official' ? <FaShieldAlt /> : <FaUser />}
                                             <span className="font-bold uppercase">{msg.sender}</span>
                                             <span>•</span>
                                             <span className="font-mono">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                         </div>
-                                        <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                                        <p className="whitespace-pre-wrap leading-relaxed text-sm">{msg.content}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+                        <div className="p-4 bg-white dark:bg-black/40 border-t border-slate-200 dark:border-white/5">
                             <form onSubmit={handleReply} className="flex gap-3">
                                 <input
                                     type="text"
                                     value={replyText}
                                     onChange={(e) => setReplyText(e.target.value)}
                                     placeholder="Type an official response..."
-                                    className="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="flex-1 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white placeholder:text-slate-500"
                                 />
                                 <button
                                     type="submit"
                                     disabled={sending}
-                                    className="bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-xl transition-colors disabled:opacity-50"
+                                    className="bg-blue-600 hover:bg-blue-500 text-white p-2.5 rounded-lg transition-colors disabled:opacity-50"
                                 >
-                                    {sending ? <span className="animate-spin text-xl">↻</span> : <FaPaperPlane />}
+                                    {sending ? <span className="animate-spin text-sm">↻</span> : <FaPaperPlane size={14} />}
                                 </button>
                             </form>
                         </div>
                     </div>
                 ) : (
-                    <div className="hidden md:flex flex-[2] bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 items-center justify-center flex-col text-slate-400">
-                        <FaShieldAlt size={64} className="mb-4 opacity-20" />
-                        <p>Select a case to view details and respond.</p>
+                    <div className="hidden md:flex flex-[2] bg-slate-50 dark:bg-white/5 rounded-2xl border border-dashed border-slate-300 dark:border-white/10 items-center justify-center flex-col text-slate-400">
+                        <FaShieldAlt size={48} className="mb-4 opacity-20" />
+                        <p className="text-sm font-bold">Select a case to view details and respond.</p>
                     </div>
                 )}
             </div>

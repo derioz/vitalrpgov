@@ -93,45 +93,45 @@ export default function FactionRoster({ department, title = "Department Roster",
                 {title}
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {roster.map((member) => (
-                    <div key={member.id} className="group relative h-[400px] rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)]">
+                    <div key={member.id} className="group relative h-[360px] rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] border border-white/5 bg-black/40">
 
                         {/* Background Image */}
-                        <div className="absolute inset-0 bg-slate-800 group-hover:scale-105 transition-transform duration-700">
+                        <div className="absolute inset-0 bg-slate-950 group-hover:scale-105 transition-transform duration-700">
                             {member.image ? (
-                                <img src={member.image} alt={member.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                                <img src={member.image} alt={member.name} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
                             ) : (
-                                <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${theme.gradient} opacity-50`}>
-                                    <FaUserShield className="text-9xl text-white/20" />
+                                <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${theme.gradient} opacity-30`}>
+                                    <FaUserShield className="text-8xl text-white/10" />
                                 </div>
                             )}
                         </div>
 
                         {/* Overlay Gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90 group-hover:opacity-95 transition-opacity"></div>
 
                         {/* Content */}
-                        <div className="absolute inset-0 p-6 flex flex-col justify-end transform transition-transform duration-500">
+                        <div className="absolute inset-0 p-5 flex flex-col justify-end transform transition-transform duration-500">
 
                             {/* Rank Badge */}
-                            <div className={`self-start px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-2 overflow-hidden relative ${theme.bg} text-white shadow-lg`}>
+                            <div className={`self-start px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-1 overflow-hidden relative ${theme.bg} text-white shadow-lg`}>
                                 <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                                 {member.rank}
                             </div>
 
-                            <h4 className="text-3xl font-black text-white mb-1 leading-none">{member.name}</h4>
+                            <h4 className="text-2xl font-black text-white mb-0.5 leading-none">{member.name}</h4>
 
                             {/* Hidden Details (Reveal on Hover) */}
-                            <div className="h-0 group-hover:h-16 overflow-hidden transition-all duration-500 opacity-0 group-hover:opacity-100">
-                                <div className="pt-4 flex flex-col gap-1">
+                            <div className="h-0 group-hover:h-14 overflow-hidden transition-all duration-500 opacity-0 group-hover:opacity-100">
+                                <div className="pt-3 flex flex-col gap-1">
                                     {member.discord && (
-                                        <div className="flex items-center gap-2 text-slate-300 text-xs font-bold">
+                                        <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold">
                                             <FaDiscord className="text-[#5865F2]" /> {member.discord}
                                         </div>
                                     )}
                                     {/* Placeholder for future badge number or stats */}
-                                    <div className="flex items-center gap-2 text-slate-400 text-xs">
+                                    <div className="flex items-center gap-2 text-slate-500 text-[10px]">
                                         <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Active Duty
                                     </div>
                                 </div>
@@ -139,7 +139,7 @@ export default function FactionRoster({ department, title = "Department Roster",
                         </div>
 
                         {/* Decorative Border */}
-                        <div className={`absolute inset-0 border-2 border-white/0 group-hover:border-white/10 rounded-3xl transition-colors pointer-events-none`}></div>
+                        <div className={`absolute inset-0 border border-white/0 group-hover:border-white/5 rounded-2xl transition-colors pointer-events-none`}></div>
                     </div>
                 ))}
             </div>

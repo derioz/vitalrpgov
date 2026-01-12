@@ -60,15 +60,15 @@ export default function AdminBarPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Form Section */}
                 <div className="lg:col-span-1">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 sticky top-[130px]">
-                        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                    <div className="bg-white dark:bg-black/40 backdrop-blur-sm rounded-2xl shadow-sm border border-slate-200 dark:border-white/5 p-6 sticky top-[130px]">
+                        <h3 className="text-lg font-bold mb-4 flex items-center gap-2 dark:text-white">
                             <FaUserPlus className="text-blue-500" /> New Attorney
                         </h3>
                         <form onSubmit={handleAdd} className="space-y-4">
                             <div>
-                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name</label>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Full Name</label>
                                 <input
-                                    className="w-full p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
                                     value={newName}
                                     onChange={e => setNewName(e.target.value)}
                                     required
@@ -76,9 +76,9 @@ export default function AdminBarPage() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Contact / Phone</label>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Contact / Phone</label>
                                 <input
-                                    className="w-full p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
                                     value={newPhone}
                                     onChange={e => setNewPhone(e.target.value)}
                                     required
@@ -86,20 +86,20 @@ export default function AdminBarPage() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Bar Status</label>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Bar Status</label>
                                 <select
-                                    className="w-full p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
                                     value={newStatus}
                                     onChange={e => setNewStatus(e.target.value)}
                                 >
-                                    <option value="Active">Active (Licensed)</option>
-                                    <option value="Suspended">Suspended</option>
-                                    <option value="Disbarred">Disbarred</option>
+                                    <option value="Active" className="dark:bg-slate-900">Active (Licensed)</option>
+                                    <option value="Suspended" className="dark:bg-slate-900">Suspended</option>
+                                    <option value="Disbarred" className="dark:bg-slate-900">Disbarred</option>
                                 </select>
                             </div>
                             <button
                                 type="submit"
-                                className="w-full bg-slate-900 dark:bg-slate-700 text-white font-bold py-3 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-600 transition-all shadow-lg hover:shadow-xl"
+                                className="w-full bg-slate-900 dark:bg-blue-600 text-white font-bold py-2.5 rounded-xl hover:bg-slate-800 dark:hover:bg-blue-500 transition-all shadow-lg hover:shadow-xl text-sm"
                             >
                                 Register Member
                             </button>
@@ -109,27 +109,27 @@ export default function AdminBarPage() {
 
                 {/* List Section */}
                 <div className="lg:col-span-2">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
-                        <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
-                            <h3 className="font-bold text-slate-700 dark:text-slate-300">Registered Attorneys ({members.length})</h3>
+                    <div className="bg-white dark:bg-black/40 backdrop-blur-sm rounded-2xl shadow-sm border border-slate-200 dark:border-white/5 overflow-hidden">
+                        <div className="p-4 border-b border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/5">
+                            <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm">Registered Attorneys ({members.length})</h3>
                         </div>
 
                         {loading ? (
                             <div className="p-12 text-center text-slate-500 animate-pulse">Loading directory...</div>
                         ) : (
-                            <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-[600px] overflow-y-auto">
+                            <div className="divide-y divide-slate-100 dark:divide-white/5 max-h-[600px] overflow-y-auto custom-scrollbar">
                                 {members.map(m => (
-                                    <div key={m.id} className="p-5 flex items-center justify-between group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <div key={m.id} className="p-4 flex items-center justify-between group hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 font-serif font-bold text-lg">
+                                            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700/50 flex items-center justify-center text-slate-400 font-serif font-bold text-lg">
                                                 {m.name.charAt(0)}
                                             </div>
                                             <div>
-                                                <h4 className="font-bold text-slate-800 dark:text-slate-100">{m.name}</h4>
+                                                <h4 className="font-bold text-slate-800 dark:text-slate-100 text-sm">{m.name}</h4>
                                                 <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
                                                     <span className="flex items-center gap-1"><FaPhone size={10} /> {m.phone || 'N/A'}</span>
                                                     <span className={`flex items-center gap-1 font-bold ${m.status === 'Active' ? 'text-green-600' :
-                                                            m.status === 'Suspended' ? 'text-amber-500' : 'text-red-600'
+                                                        m.status === 'Suspended' ? 'text-amber-500' : 'text-red-600'
                                                         }`}>
                                                         <FaCircle size={6} /> {m.status}
                                                     </span>
@@ -141,7 +141,7 @@ export default function AdminBarPage() {
                                             className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                                             title="Remove Member"
                                         >
-                                            <FaTrash />
+                                            <FaTrash size={12} />
                                         </button>
                                     </div>
                                 ))}

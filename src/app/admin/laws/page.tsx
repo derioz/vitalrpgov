@@ -51,9 +51,9 @@ export default function AdminLawsPage() {
                 </Link>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
-                <div className="p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
-                    <h3 className="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+            <div className="bg-white dark:bg-black/40 backdrop-blur-sm rounded-2xl shadow-sm border border-slate-200 dark:border-white/5 overflow-hidden">
+                <div className="p-4 border-b border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/5">
+                    <h3 className="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2 text-sm uppercase tracking-wider">
                         <FaBalanceScale className="text-slate-400" /> Current Legislation ({laws.length})
                     </h3>
                 </div>
@@ -61,21 +61,21 @@ export default function AdminLawsPage() {
                 {loading ? (
                     <div className="p-12 text-center text-slate-500 animate-pulse">Loading laws database...</div>
                 ) : (
-                    <ul className="divide-y divide-slate-100 dark:divide-slate-800">
+                    <ul className="divide-y divide-slate-100 dark:divide-white/5">
                         {laws.map(law => (
-                            <li key={law.id} className="p-5 flex items-center justify-between group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 font-bold text-sm">
+                            <li key={law.id} className="p-3 pl-4 flex items-center justify-between group hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 font-bold text-xs border border-slate-200 dark:border-white/10">
                                         §
                                     </div>
-                                    <span className="font-medium text-slate-700 dark:text-slate-200 text-lg">{law.title}</span>
+                                    <span className="font-bold text-slate-700 dark:text-slate-200 text-sm">{law.title}</span>
                                 </div>
                                 <button
                                     onClick={() => handleDelete(law.id)}
-                                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                    className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-all opacity-0 group-hover:opacity-100 mr-2"
                                     title="Delete Law"
                                 >
-                                    <FaTrash />
+                                    <FaTrash size={12} />
                                 </button>
                             </li>
                         ))}
