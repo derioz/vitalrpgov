@@ -1,12 +1,11 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import AdminSidebar from "@/components/admin/AdminSidebar";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 import { FaBars } from "react-icons/fa";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminTopBar from "@/components/admin/AdminTopBar";
 
 export default function AdminLayout({
     children,
@@ -17,6 +16,7 @@ export default function AdminLayout({
     const router = useRouter();
     const pathname = usePathname();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
     useEffect(() => {
         if (!loading && !user) {
@@ -36,22 +36,12 @@ export default function AdminLayout({
         return null; // Will redirect
     }
 
-    // RBAC CHECK
-    // Allow access if:
-    // 1. User has 'admin' role
-    // 2. User has ANY faction role (lspd, lsems, etc.) -> They need access to Announcements (conceptually)
-    // 3. User is visiting /admin/profile (Self-service)
-
-    // Check if current path is a restricted area for their role
-    // If NO roles, block everything except /admin/profile
-
     const isProfilePage = pathname === '/admin/profile';
     const hasAnyRole = userProfile?.roles && userProfile.roles.length > 0;
 
     if (!hasAnyRole && !isProfilePage) {
         return (
             <div className="min-h-screen bg-black flex flex-col items-center justify-center text-center p-6 relative overflow-hidden">
-                {/* Background effects */}
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-[100px]"></div>
 
@@ -81,90 +71,65 @@ export default function AdminLayout({
         );
     }
 
-    const currentDate = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    // Breadcrumb logic
+    const pathSegments = pathname.split('/').filter(p => p && p !== 'admin');
+    const pageTitle = pathSegments.length > 0
+        ? pathSegments[pathSegments.length - 1].charAt(0).toUpperCase() + pathSegments[pathSegments.length - 1].slice(1)
+        : 'Dashboard';
 
     return (
         <div className="min-h-screen bg-black text-slate-200 font-sans selection:bg-indigo-500/30 relative overflow-hidden">
-
             {/* Ambient System Glows */}
-            <div className="fixed top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-indigo-900/10 rounded-full blur-[150px] pointer-events-none" />
-            <div className="fixed bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-slate-800/20 rounded-full blur-[120px] pointer-events-none" />
+            <div className="fixed top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-indigo-900/10 rounded-full blur-[150px] pointer-events-none opacity-50" />
+            <div className="fixed bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-slate-800/20 rounded-full blur-[120px] pointer-events-none opacity-30" />
 
             {/* Mobile Sidebar Overlay */}
             {mobileMenuOpen && (
                 <div className="fixed inset-0 z-[60] lg:hidden font-sans">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
                     <div className="absolute left-0 top-0 bottom-0 w-80 animate-fade-in-left">
-                        <AdminSidebar onClose={() => setMobileMenuOpen(false)} />
+                        <Suspense fallback={<div className="w-80 h-full bg-black/60 backdrop-blur-md" />}>
+                            <AdminSidebar
+                                isCollapsed={false}
+                                onToggle={() => { }}
+                                onClose={() => setMobileMenuOpen(false)}
+                            />
+                        </Suspense>
                     </div>
                 </div>
             )}
 
-            {/* Mobile Fixed Navbar */}
-            <div className="lg:hidden fixed top-0 left-0 right-0 z-[50] bg-slate-950/90 backdrop-blur-xl border-b border-white/5 p-4 flex items-center justify-between shadow-2xl">
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => setMobileMenuOpen(true)}
-                        className="p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
-                    >
-                        <FaBars size={20} />
-                    </button>
-                    <span className="font-bold text-white tracking-tight">Command Center</span>
-                </div>
-                {userProfile?.icName && (
-                    <div className="w-8 h-8 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-xs font-bold text-indigo-300">
-                        {userProfile.icName.charAt(0)}
-                    </div>
-                )}
-            </div>
+            {/* Layout Wrapper */}
+            <div className={`flex transition-all duration-500 h-screen overflow-hidden p-4 md:p-6 gap-6`}>
 
-            <div className="relative z-10 flex pb-10 container mx-auto px-4 md:px-6 max-w-[1800px] h-screen overflow-hidden gap-8 pt-[70px] lg:pt-[95px]">
-
-                {/* Desktop Floating Sidebar */}
-                <div className="w-80 flex-shrink-0 hidden lg:block h-full animate-fade-in-left">
-                    <AdminSidebar />
+                {/* Desktop Sidebar Area */}
+                <div className={`
+                    hidden lg:block transition-all duration-500 ease-in-out h-full
+                    ${sidebarCollapsed ? 'w-20' : 'w-80'}
+                `}>
+                    <Suspense fallback={<div className="w-full h-full bg-white/5 rounded-[2rem] animate-pulse" />}>
+                        <AdminSidebar
+                            isCollapsed={sidebarCollapsed}
+                            onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+                        />
+                    </Suspense>
                 </div>
 
                 {/* Main Content Shell */}
-                <div className="flex-1 flex flex-col min-w-0 h-full animate-fade-in-up delay-100 relative">
+                <div className="flex-1 flex flex-col min-w-0 h-full relative">
 
-                    {/* Header Strip */}
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-4 pb-3 border-b border-white/5">
-                        <div>
-                            <div className="flex items-center gap-3 text-indigo-400 font-mono text-[10px] tracking-[0.3em] uppercase opacity-80 mb-1">
-                                <span className="w-6 h-[1px] bg-indigo-500"></span>
-                                Command Center
-                            </div>
-                            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight flex items-center gap-3">
-                                <span className="hidden md:inline">Welcome,</span>
-                                {userProfile?.icName ? (
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-300 truncate max-w-[200px] md:max-w-none block">
-                                        {userProfile.icName}
-                                    </span>
-                                ) : (
-                                    <span className="text-slate-500 blur-sm hover:blur-none transition-all duration-300 cursor-pointer bg-slate-900/50 px-3 py-0.5 rounded-lg border border-white/5">
-                                        {user?.email?.split('@')[0]}
-                                    </span>
-                                )}
-                            </h1>
-                        </div>
-                        <div className="text-right hidden md:block">
-                            <p className="text-slate-400 font-mono text-sm tracking-wide mb-1 opacity-70">{currentDate}</p>
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                </span>
-                                <span className="text-[10px] font-bold text-emerald-400 tracking-widest uppercase">System Online</span>
-                            </div>
-                        </div>
-                    </div>
+                    {/* Top Secondary Hub Menu (Horizontal Context Bar) */}
+                    <Suspense fallback={<div className="h-16 mb-6 bg-white/[0.03] rounded-2xl animate-pulse" />}>
+                        <AdminTopBar
+                            onMobileMenuOpen={() => setMobileMenuOpen(true)}
+                            pageTitle={pageTitle}
+                        />
+                    </Suspense>
 
                     {/* Scrollable Content Area */}
-                    <main className="flex-1 overflow-y-auto pr-2 custom-scrollbar relative">
+                    <main className="flex-1 overflow-y-auto pr-2 custom-scrollbar animate-fade-in-up delay-100">
                         {children}
                     </main>
-
                 </div>
             </div>
         </div>

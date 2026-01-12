@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.6.2 - Admin "Command Center" Redesign (2026-01-11)
+### Admin Panel Overhaul
+- **Dual-Mode Sidebar**: Implemented Full vs. Mini (icon-only) toggle to maximize workspace area.
+- **Collapsible Categories**: Grouped navigation into collapsible sections (Judiciary, Police, Medical, Fire) for better organization.
+- **Horizontal Context Hub**: Added a secondary top bar with real-time breadcrumbs and dynamic **Quick Actions** (e.g., "New Post" button appears automatically in Announcements).
+- **Profile Standardization**: Consistent usage of custom `photoURL` across Navbar, Admin Top Bar, and Sidebar Profile items.
+
+### Navbar & UX
+- **Profile Dropdown**: Implemented a premium hover menu for the user pill with stabilized hover state.
+- **Visual Polish**: Added micro-animations to sidebar icons and enhanced glassmorphism depth.
+
 ## v3.6.1 - Background Hotfix (2026-01-11)
 ### Bug Fixes
 - **Layout Consistency**: Resolved an issue where **EMS** and **FD** pages had redundant layout files causing background "cutoff" bars and restricted widths on large monitors.

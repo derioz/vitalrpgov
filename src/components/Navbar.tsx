@@ -9,7 +9,7 @@ import { collection, query, where, onSnapshot, updateDoc, doc } from 'firebase/f
 import { db } from '@/lib/firebase';
 
 const Navbar = () => {
-    const { user, userProfile } = useAuth();
+    const { user, userProfile, signOut } = useAuth();
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -64,136 +64,207 @@ const Navbar = () => {
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${scrolled
-                ? 'bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-md py-3'
-                : 'bg-transparent py-5'
-                }`}
+            className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-500 flex justify-center pointer-events-none p-4 ${scrolled ? 'pt-2' : 'pt-6'}`}
         >
-            <div className="container mx-auto px-6">
-                <nav className="flex items-center justify-between">
-                    {/* Logo Area */}
-                    <Link href="/" className="flex items-center gap-3 group">
-                        <div className="relative w-10 h-10 transition-transform duration-300 group-hover:scale-110">
-                            <img src="/logo.png" alt="Seal" className="w-full h-full object-contain drop-shadow-sm" />
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="font-serif font-bold text-lg leading-tight text-slate-800 dark:text-slate-100 tracking-tight">
-                                San Andreas
-                            </span>
-                            <span className="text-[10px] font-bold tracking-[0.2em] text-amber-500 uppercase">
-                                Government
-                            </span>
-                        </div>
-                    </Link>
-
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-1">
-
-                        {/* Main Portal Link - Separated */}
-                        <div className="mr-4 pr-4 border-r border-slate-200 dark:border-slate-700">
-                            <Link
-                                href="/"
-                                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold transition-all duration-300 ${pathname === '/'
-                                    ? 'bg-slate-900 text-white shadow-lg'
-                                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50'
-                                    }`}
-                            >
-                                <FaGlobeAmericas />
-                                Portal
-                            </Link>
-                        </div>
-
-                        {/* Faction Links */}
-                        <div className="bg-slate-100/50 dark:bg-black/50 backdrop-blur-sm p-1 rounded-full border border-slate-200/50 dark:border-white/5 flex items-center mr-4">
-                            {navLinks.map((link) => {
-                                const isActive = pathname.startsWith(link.href) && link.href !== '/';
-                                return (
-                                    <Link
-                                        key={link.name}
-                                        href={link.href}
-                                        className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 group ${isActive
-                                            ? `${link.activeColor} ${link.activeBg} font-bold shadow-sm`
-                                            : `text-slate-500 dark:text-slate-400 ${link.color} ${link.bgColor}`
-                                            }`}
-                                    >
-                                        <link.icon className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
-                                        {link.name}
-                                    </Link>
-                                );
-                            })}
-                        </div>
-
-                        <div className="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
-                            <div className="flex items-center gap-3">
-                                {/* Notification Bell */}
-                                {user && (
-                                    <NotificationBell userId={user.uid} />
-                                )}
-
-                                {user ? (
-                                    <div className="flex items-center gap-2">
-                                        <Link
-                                            href="/admin/profile"
-                                            className="flex items-center gap-2 pl-2 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full transition-colors border border-slate-200 dark:border-slate-700 group"
-                                        >
-                                            <div className="w-7 h-7 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                                                <FaUserCircle size={14} />
-                                            </div>
-                                            <span className="text-sm font-medium text-slate-700 dark:text-slate-200 max-w-[100px] truncate">
-                                                {userProfile?.icName ? userProfile.icName.split(' ')[0] : user.email?.split('@')[0]}
-                                            </span>
-                                        </Link>
-                                    </div>
-                                ) : (
-                                    <Link
-                                        href="/login"
-                                        className="px-5 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full text-sm font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-                                    >
-                                        Login
-                                    </Link>
-                                )}
-                            </div>
-                        </div>
+            <div className={`
+                pointer-events-auto flex items-center justify-between px-6 py-2.5 
+                rounded-2xl border transition-all duration-500 
+                ${scrolled
+                    ? 'w-full max-w-5xl bg-black/60 backdrop-blur-xl border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]'
+                    : 'w-full max-w-[95%] bg-black/40 backdrop-blur-lg border-white/5'
+                }
+            `}>
+                {/* Logo Area */}
+                <Link href="/" className="flex items-center gap-4 group">
+                    <div className="relative w-9 h-9 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12">
+                        <div className="absolute inset-0 bg-amber-500/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <img src="/logo.png" alt="Seal" className="relative z-10 w-full h-full object-contain filter brightness-110 drop-shadow-[0_0_8px_rgba(245,158,11,0.3)]" />
                     </div>
+                    <div className="flex flex-col border-l border-white/10 pl-4">
+                        <span className="font-serif font-black text-sm leading-tight text-white tracking-widest uppercase opacity-90">
+                            San Andreas
+                        </span>
+                        <span className="text-[10px] font-black tracking-[0.3em] text-amber-500/80 uppercase">
+                            Government
+                        </span>
+                    </div>
+                </Link>
 
-                    {/* Mobile Menu Button - Simplified */}
-                    <button
-                        className="md:hidden p-2 text-slate-600 dark:text-slate-300"
-                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    >
-                        {mobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-                    </button>
-                </nav>
-            </div>
-
-            {/* Mobile Menu Overlay */}
-            {mobileMenuOpen && (
-                <div className="absolute top-full left-0 w-full bg-white dark:bg-black border-b border-slate-200 dark:border-white/5 shadow-xl p-4 md:hidden flex flex-col gap-2">
+                {/* Desktop Navigation */}
+                <div className="hidden md:flex items-center gap-2">
+                    {/* Portal Separator */}
                     <Link
                         href="/"
-                        className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-white font-bold"
-                        onClick={() => setMobileMenuOpen(false)}
+                        className={`
+                            flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300
+                            ${pathname === '/'
+                                ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.3)]'
+                                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                            }
+                        `}
                     >
-                        <FaGlobeAmericas /> Portal
+                        <FaGlobeAmericas size={14} />
+                        Portal
                     </Link>
-                    {navLinks.map((link) => (
+
+                    <div className="h-6 w-px bg-white/10 mx-2"></div>
+
+                    {/* Faction Links Capsule */}
+                    <div className="flex items-center gap-1 p-1 bg-white/5 rounded-xl border border-white/5">
+                        {navLinks.map((link) => {
+                            const isActive = pathname.startsWith(link.href) && link.href !== '/';
+                            return (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    className={`
+                                        flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all duration-300 group
+                                        ${isActive
+                                            ? `${link.activeColor} bg-white/10 shadow-inner`
+                                            : `text-slate-500 ${link.color} hover:bg-white/5`
+                                        }
+                                    `}
+                                >
+                                    <link.icon className={`text-sm transition-transform duration-500 ${isActive ? 'scale-110 rotate-3' : 'group-hover:scale-110 group-hover:rotate-3'}`} />
+                                    <span className="opacity-80 group-hover:opacity-100">{link.name}</span>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Right Side Actions */}
+                <div className="flex items-center gap-2">
+                    {user && <NotificationBell userId={user.uid} />}
+
+                    {user ? (
+                        <div className="relative group/profile">
+                            <Link
+                                href="/admin/profile"
+                                className="flex items-center gap-3 pl-1 pr-4 py-1.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all duration-300 group ring-offset-0 focus:ring-2 focus:ring-amber-500/50"
+                            >
+                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform overflow-hidden">
+                                    {userProfile?.photoURL ? (
+                                        <img src={userProfile.photoURL} alt="Profile" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <FaUserCircle size={16} />
+                                    )}
+                                </div>
+                                <div className="flex flex-col -space-y-0.5">
+                                    <span className="text-[10px] font-black text-amber-500 uppercase tracking-tighter opacity-70">Authenticated</span>
+                                    <span className="text-xs font-bold text-white max-w-[80px] truncate uppercase tracking-tight">
+                                        {userProfile?.icName ? userProfile.icName.split(' ')[0] : 'Resident'}
+                                    </span>
+                                </div>
+                            </Link>
+
+                            {/* Hover Dropdown Menu */}
+                            <div className="absolute top-full right-0 pt-2 w-56 opacity-0 translate-y-2 pointer-events-none group-hover/profile:opacity-100 group-hover/profile:translate-y-0 group-hover/profile:pointer-events-auto transition-all duration-300 z-[60]">
+                                <div className="bg-black/90 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2 space-y-1">
+                                    <div className="px-3 py-2 mb-1 border-b border-white/5">
+                                        <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Account Actions</p>
+                                    </div>
+
+                                    <Link href="/admin/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all group/item">
+                                        <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover/item:bg-amber-500 group-hover/item:text-black transition-all">
+                                            <FaUserCircle size={14} />
+                                        </div>
+                                        Edit Profile
+                                    </Link>
+
+                                    {(userProfile?.roles?.includes('admin') || userProfile?.roles?.includes('superadmin')) && (
+                                        <Link href="/admin" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all group/item">
+                                            <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover/item:bg-indigo-500 group-hover/item:text-white transition-all">
+                                                <FaShieldAlt size={14} />
+                                            </div>
+                                            Admin Panel
+                                        </Link>
+                                    )}
+
+                                    {userProfile?.roles?.includes('superadmin') && (
+                                        <Link href="/admin/users" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all group/item">
+                                            <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover/item:bg-purple-500 group-hover/item:text-white transition-all">
+                                                <FaGlobeAmericas size={14} />
+                                            </div>
+                                            Manage Users
+                                        </Link>
+                                    )}
+
+                                    <div className="pt-1 mt-1 border-t border-white/5">
+                                        <button
+                                            onClick={() => signOut()}
+                                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-red-400 hover:text-white hover:bg-red-500/10 transition-all group/item"
+                                        >
+                                            <div className="w-7 h-7 rounded-lg bg-red-500/10 flex items-center justify-center group-hover/item:bg-red-500 group-hover/item:text-white transition-all">
+                                                <FaTimes size={14} />
+                                            </div>
+                                            Log Out
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
                         <Link
-                            key={link.name}
-                            href={link.href}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${link.color} ${link.bgColor} hover:bg-opacity-10`}
+                            href="/login"
+                            className="px-6 py-2 bg-white text-black rounded-xl text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                        >
+                            Log In
+                        </Link>
+                    )}
+
+                    {/* Mobile Toggle */}
+                    <button
+                        className="md:hidden w-10 h-10 flex items-center justify-center text-white bg-white/5 rounded-xl border border-white/5"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    >
+                        {mobileMenuOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
+                    </button>
+                </div>
+            </div>
+
+            {/* Mobile Menu Overlay - Capsule Style */}
+            {mobileMenuOpen && (
+                <div className="absolute top-24 left-4 right-4 bg-black/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl md:hidden overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-amber-300 opacity-50"></div>
+                    <div className="grid gap-2">
+                        <Link
+                            href="/"
+                            className={`flex items-center gap-3 px-5 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all ${pathname === '/' ? 'bg-white text-black' : 'text-slate-400 bg-white/5'}`}
                             onClick={() => setMobileMenuOpen(false)}
                         >
-                            <link.icon /> {link.name}
+                            <FaGlobeAmericas /> Portal
                         </Link>
-                    ))}
-                    <div className="h-px bg-slate-200 dark:bg-slate-700 my-2"></div>
-                    {user ? (
-                        <Link href="/admin" className="block px-4 py-3 font-bold text-amber-500">
-                            Dashboard ({userProfile?.icName ? userProfile.icName.split(' ')[0] : user.email?.split('@')[0]})
-                        </Link>
-                    ) : (
-                        <Link href="/login" className="block px-4 py-3 font-bold text-amber-500">Login</Link>
-                    )}
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.name}
+                                href={link.href}
+                                className={`flex items-center gap-3 px-5 py-4 rounded-2xl font-black uppercase tracking-widest text-sm bg-white/5 ${link.color}`}
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                <link.icon /> {link.name}
+                            </Link>
+                        ))}
+                    </div>
+                    <div className="mt-6 pt-6 border-t border-white/5">
+                        {user ? (
+                            <Link
+                                href="/admin"
+                                className="flex items-center justify-center gap-3 w-full py-4 bg-amber-500 text-black rounded-2xl font-black uppercase tracking-widest text-sm"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Enter Admin Panel
+                            </Link>
+                        ) : (
+                            <Link
+                                href="/login"
+                                className="flex items-center justify-center gap-3 w-full py-4 bg-white text-black rounded-2xl font-black uppercase tracking-widest text-sm"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Log In
+                            </Link>
+                        )}
+                    </div>
                 </div>
             )}
         </header>
