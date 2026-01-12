@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.6.1 - Background Hotfix (2026-01-11)
+### Bug Fixes
+- **Layout Consistency**: Resolved an issue where **EMS** and **FD** pages had redundant layout files causing background "cutoff" bars and restricted widths on large monitors.
+- **Global Theme Sync**: Synchronized Navbar, Home Page, and Quick Navigation to use the pure black theme.
+
 ## v3.6 - Dark Mode Redesign (2026-01-11)
 ### Visual Overhaul & Dark Theme
 - **Global Dark Mode**: Switched to a pure black (`#000000`) theme for a premium, cinematic aesthetic.

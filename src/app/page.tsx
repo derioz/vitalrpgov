@@ -33,7 +33,7 @@ const MinimalCard = ({ href, color, icon: Icon, title, subtitle, number }: any) 
                 group relative flex-1 flex flex-col justify-between p-8 md:p-10 border-r border-white/5 last:border-r-0
                 transition-all duration-700 ease-out
                 ${themeStyles[color]}
-                hover:flex-[1.5] bg-slate-950/50 backdrop-blur-sm
+                hover:flex-[1.5] bg-black/50 backdrop-blur-sm
             `}
     >
       {/* Hover Gradient Spot */}
@@ -93,13 +93,13 @@ export default function Home() {
 
   return (
     // Fits exactly under the 95px header.
-    <div className="h-[calc(100vh-95px)] bg-slate-50 dark:bg-slate-950 flex flex-col relative overflow-hidden">
+    <div className="h-[calc(100vh-95px)] bg-slate-50 dark:bg-black flex flex-col relative overflow-hidden">
 
       {/* Cinematic Background Grain/Overlay (Static) */}
       <div className="absolute inset-0 pointer-events-none opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] invert dark:invert-0"></div>
 
       {/* Page Header */}
-      <div className="relative z-20 pt-10 pb-6 text-center border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
+      <div className="relative z-20 pt-10 pb-6 text-center border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-black/80 backdrop-blur-md">
         <h1 className="text-3xl md:text-4xl font-serif font-medium text-slate-900 dark:text-white tracking-widest uppercase">
           San Andreas <span className="text-slate-400 dark:text-slate-500">Legal Portal</span>
         </h1>

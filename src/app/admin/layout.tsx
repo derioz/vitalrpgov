@@ -50,7 +50,7 @@ export default function AdminLayout({
 
     if (!hasAnyRole && !isProfilePage) {
         return (
-            <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-center p-6 relative overflow-hidden">
+            <div className="min-h-screen bg-black flex flex-col items-center justify-center text-center p-6 relative overflow-hidden">
                 {/* Background effects */}
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-[100px]"></div>
@@ -84,7 +84,7 @@ export default function AdminLayout({
     const currentDate = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-indigo-500/30 relative overflow-hidden">
+        <div className="min-h-screen bg-black text-slate-200 font-sans selection:bg-indigo-500/30 relative overflow-hidden">
 
             {/* Ambient System Glows */}
             <div className="fixed top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-indigo-900/10 rounded-full blur-[150px] pointer-events-none" />

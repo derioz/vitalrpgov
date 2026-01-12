@@ -14,11 +14,12 @@
   --foreground: #f8fafc;
 }
 
+html,
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-jakarta);
-  @apply tracking-tight antialiased;
+  @apply tracking-tight antialiased overflow-x-hidden;
 }
 
 @layer base {

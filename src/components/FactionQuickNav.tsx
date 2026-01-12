@@ -24,8 +24,8 @@ export default function FactionQuickNav({ items }: FactionQuickNavProps) {
                     key={i}
                     onClick={item.onClick}
                     className={`
-                        relative group bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 
-                        hover:bg-slate-800/60 transition-all duration-300 overflow-hidden cursor-pointer
+                        relative group bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 
+                        hover:bg-white/5 transition-all duration-300 overflow-hidden cursor-pointer
                         hover:border-${item.color}-500/30 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)]
                     `}
                 >

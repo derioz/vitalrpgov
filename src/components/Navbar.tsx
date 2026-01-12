@@ -64,8 +64,8 @@ const Navbar = () => {
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-                ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-md py-3'
+            className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${scrolled
+                ? 'bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-md py-3'
                 : 'bg-transparent py-5'
                 }`}
         >
@@ -104,7 +104,7 @@ const Navbar = () => {
                         </div>
 
                         {/* Faction Links */}
-                        <div className="bg-slate-100/50 dark:bg-slate-800/50 backdrop-blur-sm p-1 rounded-full border border-slate-200/50 dark:border-slate-700/50 flex items-center mr-4">
+                        <div className="bg-slate-100/50 dark:bg-black/50 backdrop-blur-sm p-1 rounded-full border border-slate-200/50 dark:border-white/5 flex items-center mr-4">
                             {navLinks.map((link) => {
                                 const isActive = pathname.startsWith(link.href) && link.href !== '/';
                                 return (
@@ -168,7 +168,7 @@ const Navbar = () => {
 
             {/* Mobile Menu Overlay */}
             {mobileMenuOpen && (
-                <div className="absolute top-full left-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-xl p-4 md:hidden flex flex-col gap-2">
+                <div className="absolute top-full left-0 w-full bg-white dark:bg-black border-b border-slate-200 dark:border-white/5 shadow-xl p-4 md:hidden flex flex-col gap-2">
                     <Link
                         href="/"
                         className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-white font-bold"

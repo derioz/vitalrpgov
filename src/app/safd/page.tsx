@@ -12,7 +12,7 @@ import FactionRoster from "@/components/FactionRoster";
 export default function SAFDPage() {
     const [showComplaintForm, setShowComplaintForm] = useState(false);
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-black text-slate-900 dark:text-slate-200 relative overflow-hidden font-sans selection:bg-orange-500/30">
+        <div className="min-h-screen w-full bg-slate-50 dark:bg-black text-slate-900 dark:text-slate-200 relative overflow-hidden font-sans selection:bg-orange-500/30">
 
             {/* Ambient Background Glows */}
             <div className="fixed top-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-orange-600/5 rounded-full blur-[150px] pointer-events-none" />
