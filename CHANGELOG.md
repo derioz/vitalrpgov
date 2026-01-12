@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.7.5 - Hydration Stability (2026-01-12)
+### Bug Fixes
+- **Hydration Mismatch**: Added global suppression for hydration warnings (`suppressHydrationWarning`) to prevent crashes caused by browser extensions or hydration mismatches in the layout.
+
+## v3.7.4 - Navigation Stability (2026-01-12)
+### Bug Fixes
+- **Hard Navigation Fallback**: Replaced client-side routing with hard navigation (`<a>` tags) for the Changelog page. This bypasses the Next.js Client Router entirely for this specific route, eliminating RSC payload crashes.
+
 ## v3.7.3 - Changelog Architecture Overhaul (2026-01-12)
 ### Bug Fixes
 - **Changelog Navigation (Final Logic)**: Completely refactored the Changelog page architecture to prevent persistent "Application Errors" on navigation.
