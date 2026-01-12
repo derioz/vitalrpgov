@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.7.1 - "Command Center" Changelog Redesign (2026-01-12)
+### Visual Overhaul
+- **Interactive Timeline**: Completely redesigned the Admin Changelog (`/admin/changelog`) with a sleek, vertical timeline layout.
+- **Smart Badges**: The system now automatically detects keywords in update notes (e.g., "**Feature**", "**Bug Fix**", "**Visual**") and transforms them into glowing, color-coded badges.
+- **Condensed UI**: Version history is now collapsible and condensed by default, allowing for easier navigation through long update histories.
+- **Premium Aesthetics**: Implemented glassmorphism cards, neon accents, and smooth expansion animations for a high-end feel.
+
 ## v3.7 - Resources & Quick Links System (2026-01-12)
 ### Feature: Faction Quick Links
 - **New Sidebar Widget**: Implemented a dedicated "Quick Links" widget for all factions (DOJ, LSPD, LSEMS, SAFD), separate from Official Resources.

@@ -1,6 +1,6 @@
 import { getChangelog } from '@/lib/changelog';
-import ReactMarkdown from 'react-markdown';
-import { FaCode, FaArrowLeft } from 'react-icons/fa';
+import ClientChangelog from '@/components/admin/ClientChangelog';
+import { FaArrowLeft } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default async function ChangelogPage() {
@@ -33,24 +33,8 @@ export default async function ChangelogPage() {
                 </Link>
             </div>
 
-            {/* Changelog Feed */}
-            <div className="space-y-8">
-                {changelogs.map((log) => (
-                    <div key={log.id} className="bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-3xl p-8 relative overflow-hidden group hover:border-white/10 transition-colors">
-                        <div className="flex flex-col md:flex-row md:items-baseline gap-4 mb-6 border-b border-white/5 pb-6">
-                            <span className="px-3 py-1 bg-pink-500/10 text-pink-400 font-mono font-bold rounded-lg border border-pink-500/20 shadow-[0_0_15px_rgba(236,72,153,0.1)]">
-                                {log.version}
-                            </span>
-                            <h2 className="text-2xl font-bold text-white">{log.title}</h2>
-                            <span className="text-sm font-mono text-slate-500 md:ml-auto uppercase tracking-widest">{log.date}</span>
-                        </div>
-
-                        <div className="text-slate-300 prose prose-invert prose-lg max-w-none prose-p:leading-relaxed prose-headings:text-white prose-a:text-pink-400 prose-code:text-indigo-300 prose-pre:bg-slate-950 prose-pre:border prose-pre:border-slate-800 prose-li:marker:text-slate-600">
-                            <ReactMarkdown>{log.content}</ReactMarkdown>
-                        </div>
-                    </div>
-                ))}
-            </div>
+            {/* Client Interactive Changelog */}
+            <ClientChangelog items={changelogs} />
         </div>
     );
 }
