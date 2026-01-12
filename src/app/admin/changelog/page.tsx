@@ -1,10 +1,14 @@
-import { getChangelog } from '@/lib/changelog';
+'use client';
+import { useState, useEffect } from 'react';
 import ClientChangelog from '@/components/admin/ClientChangelog';
 import { FaArrowLeft } from 'react-icons/fa';
 import Link from 'next/link';
+import changelogData from '@/data/changelog.json';
+import type { ChangelogItem } from '@/lib/changelog';
 
-export default async function ChangelogPage() {
-    const changelogs = await getChangelog();
+export default function ChangelogPage() {
+    // Provide a safe fallback if JSON is empty or missing, though build should ensure it exists.
+    const changelogs: ChangelogItem[] = (changelogData as any[]) || [];
 
     return (
         <div className="space-y-8 max-w-5xl mx-auto">

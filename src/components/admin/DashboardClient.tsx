@@ -328,6 +328,7 @@ export default function DashboardClient() {
 
                     <Link
                         href="/admin/changelog"
+                        prefetch={false}
                         className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 border border-slate-700 group"
                     >
                         View Full Changelog

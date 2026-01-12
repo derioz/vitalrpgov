@@ -42,6 +42,7 @@ interface AdminSidebarProps {
 const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false, onClick, isCollapsed, imageUrl }: any) => (
     <Link
         href={href}
+        prefetch={false} // Prevent RSC prefetch errors (enqueueModel)
         onClick={(e) => {
             if (onClick) onClick();
         }}

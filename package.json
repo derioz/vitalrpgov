@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && if exist docs rd /s /q docs && move out docs",
+    "build": "node scripts/generate-changelog.js && next build && if exist docs rd /s /q docs && move out docs",
     "start": "next start",
     "lint": "eslint"
   },

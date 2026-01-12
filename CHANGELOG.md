@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.7.3 - Changelog Architecture Overhaul (2026-01-12)
+### Bug Fixes
+- **Changelog Navigation (Final Logic)**: Completely refactored the Changelog page architecture to prevent persistent "Application Errors" on navigation.
+    - **API Route**: Created `api/changelog` to serve update data as pure JSON.
+    - **Client-Side Fetch**: Converted the Changelog page to a fully Client-Side component that fetches data on mount, bypassing Next.js Server Component prefetching entirely.
+    - **Prefetch Disabled**: explicit `prefetch={false}` added to all Admin Sidebar links to prevent RSC payload mismatches.
+
 ## v3.7.2 - Navigation & Hydration Fix (2026-01-12)
 ### Bug Fixes
 - **Changelog Navigation**: Resolved a client-side exception that occurred when navigating to the Changelog page via the Admin Sidebar. Implemented a "Client-Side Mounting" strategy to safely handle hydration and prevent React Server Component conflicts during transitions.
