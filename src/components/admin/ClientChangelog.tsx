@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { FaChevronDown, FaChevronUp, FaCode, FaBug, FaMagic, FaStar, FaInfoCircle } from 'react-icons/fa';
-import { ChangelogItem } from '@/lib/changelog';
+import type { ChangelogItem } from '@/lib/changelog';
 
 interface ClientChangelogProps {
     items: ChangelogItem[];
