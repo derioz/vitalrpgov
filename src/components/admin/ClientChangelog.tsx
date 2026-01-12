@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { FaChevronDown, FaChevronUp, FaCode, FaBug, FaMagic, FaStar, FaInfoCircle } from 'react-icons/fa';
 import type { ChangelogItem } from '@/lib/changelog';
@@ -10,9 +10,18 @@ interface ClientChangelogProps {
 }
 
 export default function ClientChangelog({ items }: ClientChangelogProps) {
+    const [mounted, setMounted] = useState(false);
     // Track expanded state for each item. Default: Key/Latest expanded? Or all? 
     // User requested "condensed". Let's expand the first one by default.
     const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set([items[0]?.id]));
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return <div className="h-96 w-full animate-pulse bg-white/5 rounded-3xl" />;
+    }
 
     const toggleExpand = (id: string) => {
         const newSet = new Set(expandedIds);

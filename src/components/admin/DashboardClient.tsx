@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { collection, query, where, getDocs, orderBy, limit, getCountFromServer } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Link from 'next/link';
-import { ChangelogItem } from '@/lib/changelog'; // Import interface
+import type { ChangelogItem } from '@/lib/changelog'; // Import interface
 import ReactMarkdown from 'react-markdown';
 
 interface DashboardStat {

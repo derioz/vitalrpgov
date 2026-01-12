@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.7.2 - Navigation & Hydration Fix (2026-01-12)
+### Bug Fixes
+- **Changelog Navigation**: Resolved a client-side exception that occurred when navigating to the Changelog page via the Admin Sidebar. Implemented a "Client-Side Mounting" strategy to safely handle hydration and prevent React Server Component conflicts during transitions.
+- **Import Stabilization**: Optimized imports in `DashboardClient.tsx` and `ClientChangelog.tsx` to prevent server-side Node.js modules from leaking into client-side bundles.
+
 ## v3.7.1 - "Command Center" Changelog Redesign (2026-01-12)
 ### Visual Overhaul
 - **Interactive Timeline**: Completely redesigned the Admin Changelog (`/admin/changelog`) with a sleek, vertical timeline layout.
