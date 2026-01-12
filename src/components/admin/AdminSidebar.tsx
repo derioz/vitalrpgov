@@ -39,51 +39,57 @@ interface AdminSidebarProps {
     onClose?: () => void;
 }
 
-const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false, onClick, isCollapsed, imageUrl }: any) => (
-    <Link
-        href={href}
-        prefetch={false} // Prevent RSC prefetch errors (enqueueModel)
-        onClick={(e) => {
-            if (onClick) onClick();
-        }}
-        title={isCollapsed ? label : ""}
-        className={`
+const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false, onClick, isCollapsed, imageUrl }: any) => {
+    // Force hard reload for Changelog to bypass persistent RSC/Next.js hydration crash on this specific route
+    const isChangelog = href === '/admin/changelog';
+    const Component = isChangelog ? 'a' : Link;
+
+    return (
+        <Component
+            href={href}
+            // prefetch={false} // Not needed for 'a' tag, relevant for Link
+            onClick={(e: any) => {
+                if (onClick) onClick();
+            }}
+            title={isCollapsed ? label : ""}
+            className={`
             group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-500 relative overflow-hidden
             ${active
-                ? 'bg-indigo-600 shadow-[0_0_25px_rgba(79,70,229,0.4)] text-white'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
-            }
+                    ? 'bg-indigo-600 shadow-[0_0_25px_rgba(79,70,229,0.4)] text-white'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }
             ${isSystem ? 'hover:bg-red-500/10 hover:text-red-400' : ''}
             ${isCollapsed ? 'justify-center px-0 w-12 mx-auto' : ''}
         `}
-    >
-        {/* Glow effect for active state */}
-        {active && (
-            <div className="absolute inset-0 bg-white/20 blur-xl"></div>
-        )}
+        >
+            {/* Glow effect for active state */}
+            {active && (
+                <div className="absolute inset-0 bg-white/20 blur-xl"></div>
+            )}
 
-        {imageUrl ? (
-            <div className={`
+            {imageUrl ? (
+                <div className={`
                 relative z-10 w-5 h-5 rounded-md overflow-hidden border border-white/20 transition-all duration-500
                 ${active ? 'scale-110' : 'group-hover:scale-110 group-hover:rotate-6'}
             `}>
-                <img src={imageUrl} alt={label} className="w-full h-full object-cover" />
-            </div>
-        ) : (
-            <Icon className={`
+                    <img src={imageUrl} alt={label} className="w-full h-full object-cover" />
+                </div>
+            ) : (
+                <Icon className={`
                 relative z-10 transition-all duration-500
                 ${active ? 'scale-110' : 'group-hover:scale-110 group-hover:rotate-6'}
                 ${isCollapsed ? 'text-lg' : 'text-sm'}
             `} />
-        )}
+            )}
 
-        {!isCollapsed && <span className="relative z-10 font-bold tracking-tight text-xs uppercase">{label}</span>}
+            {!isCollapsed && <span className="relative z-10 font-bold tracking-tight text-xs uppercase">{label}</span>}
 
-        {active && !isCollapsed && (
-            <div className="absolute right-3 w-1 h-1 rounded-full bg-white animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
-        )}
-    </Link>
-);
+            {active && !isCollapsed && (
+                <div className="absolute right-3 w-1 h-1 rounded-full bg-white animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+            )}
+        </Component>
+    );
+}
 
 export default function AdminSidebar({ isCollapsed = false, onToggle, onClose }: AdminSidebarProps) {
     const pathname = usePathname();

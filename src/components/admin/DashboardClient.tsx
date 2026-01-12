@@ -326,14 +326,13 @@ export default function DashboardClient() {
                         </div>
                     </div>
 
-                    <Link
+                    <a
                         href="/admin/changelog"
-                        prefetch={false}
                         className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 border border-slate-700 group"
                     >
                         View Full Changelog
                         <FaArrowUp className="rotate-45 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </Link>
+                    </a>
                 </div>
             </div>
         </div>

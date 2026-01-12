@@ -7,8 +7,16 @@ import changelogData from '@/data/changelog.json';
 import type { ChangelogItem } from '@/lib/changelog';
 
 export default function ChangelogPage() {
-    // Provide a safe fallback if JSON is empty or missing, though build should ensure it exists.
-    const changelogs: ChangelogItem[] = (changelogData as any[]) || [];
+    // Robustly handle JSON import (ESM/CJS interoperability)
+    const rawData = changelogData as any;
+    const items = Array.isArray(rawData) ? rawData : (rawData?.default || []);
+
+    // Debugging for production
+    if (typeof window !== 'undefined') {
+        console.log('[ChangelogPage] Loaded Data:', items);
+    }
+
+    const changelogs: ChangelogItem[] = (items as ChangelogItem[]) || [];
 
     return (
         <div className="space-y-8 max-w-5xl mx-auto">
