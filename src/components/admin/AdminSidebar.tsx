@@ -60,6 +60,7 @@ const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false, onClic
             title={isCollapsed ? label : ""}
             className={`
             group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-500 relative overflow-hidden
+            ${isChangelog ? 'cursor-pointer' : ''}
             ${active
                     ? 'bg-indigo-600 shadow-[0_0_25px_rgba(79,70,229,0.4)] text-white'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'

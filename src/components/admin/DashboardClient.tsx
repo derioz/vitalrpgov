@@ -8,6 +8,7 @@ import { db } from '@/lib/firebase';
 import Link from 'next/link';
 import type { ChangelogItem } from '@/lib/changelog'; // Import interface
 import ReactMarkdown from 'react-markdown';
+import { useAdminUI } from '@/app/admin/layout';
 
 interface DashboardStat {
     label: string;
@@ -27,9 +28,13 @@ interface ActivityItem {
 }
 
 interface DashboardClientProps {
+    onOpenChangelog?: () => void;
 }
 
-export default function DashboardClient() {
+export default function DashboardClient({ onOpenChangelog: propOnOpenChangelog }: DashboardClientProps) {
+    const { openChangelog: contextOnOpenChangelog } = useAdminUI();
+    const onOpenChangelog = propOnOpenChangelog || contextOnOpenChangelog;
+
     const { userProfile } = useAuth();
 
     // Stats
@@ -326,13 +331,13 @@ export default function DashboardClient() {
                         </div>
                     </div>
 
-                    <a
-                        href="/admin/changelog"
-                        className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 border border-slate-700 group"
+                    <div
+                        onClick={onOpenChangelog}
+                        className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 border border-slate-700 group cursor-pointer"
                     >
                         View Full Changelog
                         <FaArrowUp className="rotate-45 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
