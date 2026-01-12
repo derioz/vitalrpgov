@@ -1,5 +1,25 @@
 # Changelog
 
+## v3.7 - Resources & Quick Links System (2026-01-12)
+### Feature: Faction Quick Links
+- **New Sidebar Widget**: Implemented a dedicated "Quick Links" widget for all factions (DOJ, LSPD, LSEMS, SAFD), separate from Official Resources.
+- **Admin Management**: Created independent managers for Quick Links (`/admin/[faction]/quick-links`) with icon picking and color selection.
+- **Migration**: Moved legacy navigation buttons (Join, Roster, SOPs, etc.) from horizontal bars into this new sidebar system for a cleaner UI.
+- **Smart Behavior**: Links starting with `#` now trigger smooth scrolling to page sections instead of opening new tabs.
+
+### Feature: Universal Resources
+- **Generic Architecture**: Refactored the Resources system to be fully generic, allowing any faction to have multiple resource lists (e.g., "Official Resources", "Quick Links").
+- **DOJ Migration**: Consolidated DOJ-specific resource handling into the universal system.
+- **Admin Panel**: Added dedicated "Resources" managers for all factions.
+
+### Visual & UX Improvements
+- **Contrast Update**: Increased background opacity and border contrast for Cards, Modals, and Rosters to improve readability against the black background.
+- **Admin Layout**: Fixed layout issues where the sidebar/content height was incorrect, removing unnecessary scrollbars.
+- **Bar Association**:
+  - Added Photo URL, Bar Number, and Firm fields to the Attorney Roster.
+  - Enhanced the Admin Bar Manager with photo upload support and nicer edit forms.
+- **Cleanup**: Removed deprecated "Quick Action" grids (MDT, Impound, Gang Intel) to declutter faction pages.
+
 ## v3.6.2 - Admin "Command Center" Redesign (2026-01-11)
 ### Admin Panel Overhaul
 - **Dual-Mode Sidebar**: Implemented Full vs. Mini (icon-only) toggle to maximize workspace area.

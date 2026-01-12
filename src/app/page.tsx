@@ -33,7 +33,7 @@ const MinimalCard = ({ href, color, icon: Icon, title, subtitle, number }: any) 
                 group relative flex-1 flex flex-col justify-between p-8 md:p-10 border-r border-white/5 last:border-r-0
                 transition-all duration-700 ease-out
                 ${themeStyles[color]}
-                hover:flex-[1.5] bg-black/50 backdrop-blur-sm
+                hover:flex-[1.5] bg-zinc-900/40 backdrop-blur-sm border-white/10
             `}
     >
       {/* Hover Gradient Spot */}
@@ -65,7 +65,7 @@ const MinimalCard = ({ href, color, icon: Icon, title, subtitle, number }: any) 
         </p>
 
         <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors duration-300">
-          <span className="w-8 h-[1px] bg-slate-300 dark:bg-slate-700 group-hover:bg-slate-900 dark:group-hover:bg-white transition-colors" />
+          <span className="w-8 h-[1px] bg-slate-300 dark:bg-white/20 group-hover:bg-slate-900 dark:group-hover:bg-white transition-colors" />
           Enter Portal
         </div>
       </div>

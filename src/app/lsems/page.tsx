@@ -8,6 +8,7 @@ import FactionQuickNav from "@/components/FactionQuickNav";
 import ComplaintForm from "@/components/ComplaintForm";
 
 import FactionRoster from "@/components/FactionRoster";
+import FactionResources from "@/components/FactionResources";
 
 export default function LSEMSPage() {
     const [showComplaintForm, setShowComplaintForm] = useState(false);
@@ -38,18 +39,28 @@ export default function LSEMSPage() {
                     <FaHeartbeat className="absolute top-1/2 right-0 -translate-y-1/2 text-[15rem] text-red-900/10 pointer-events-none -rotate-12" />
                 </header>
 
-                {/* Quick Navigation / Key Resources */}
-                <FactionQuickNav items={[
-                    { label: 'Join EMS', subLabel: 'Medical Training', icon: FaUserMd, color: 'red', href: '#apply' },
-                    { label: 'Staff Roster', subLabel: 'On-Call Medics', icon: FaNotesMedical, color: 'pink', href: '#roster' },
-                    { label: 'Protocols', subLabel: 'Treatment Guides', icon: FaHeartbeat, color: 'emerald', href: '#protocols' },
-                    { label: 'Hospitals', subLabel: 'Facilities', icon: FaHospital, color: 'blue', href: '#hospitals' },
-                ]} />
+
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
                     {/* Left Column: Actions (4 cols) */}
                     <div className="lg:col-span-4 space-y-6 animate-fade-in-up delay-300 order-2 lg:order-1">
+                        {/* Medical Quick Links Sidebar */}
+                        <FactionResources
+                            faction="LSEMS"
+                            variant="sidebar"
+                            title="Quick Links"
+                            settingId="lsems_quicklinks"
+                            customDefaults={[
+                                { title: "Join EMS", desc: "Medical Training", url: "#apply", icon: "id-card", color: "red" },
+                                { title: "Staff Roster", desc: "On-Call Medics", url: "#roster", icon: "heart", color: "pink" },
+                                { title: "Protocols", desc: "Treatment Guides", url: "#protocols", icon: "book", color: "emerald" },
+                                { title: "Hospitals", desc: "Facilities", url: "#hospitals", icon: "landmark", color: "blue" }
+                            ]}
+                        />
+
+                        {/* Medical Resources Sidebar */}
+                        <FactionResources faction="LSEMS" variant="sidebar" />
 
                         {/* Quick Actions Grid */}
                         <div className="grid grid-cols-2 gap-3">
@@ -70,32 +81,8 @@ export default function LSEMSPage() {
                                 </div>
                             </button>
 
-                            {[
-                                { icon: FaUserMd, label: 'Roster', color: 'pink' },
-                                { icon: FaSyringe, label: 'Pharmacy', color: 'emerald' },
-                                { icon: FaHospital, label: 'Wards', color: 'blue' },
-                            ].map((action, i) => (
-                                <button key={i} className={`
-                                relative overflow-hidden p-4 rounded-xl bg-white/5 dark:bg-black/40 border border-slate-200 dark:border-white/5 
-                                hover:bg-red-600 hover:border-red-500 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)]
-                                transition-all duration-300 group text-left
-                            `}>
-                                    <action.icon className="text-2xl text-slate-500 dark:text-slate-400 group-hover:text-white mb-3 transition-colors" />
-                                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-white transition-colors">{action.label}</span>
-                                    <FaChevronRight className="absolute bottom-3 right-3 text-white/0 group-hover:text-white/100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300" />
-                                </button>
-                            ))}
                         </div>
 
-                        {/* Dispatch Card */}
-                        <div className="rounded-2xl bg-gradient-to-br from-red-600 to-rose-800 p-6 shadow-2xl shadow-red-900/20 text-white relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
-                            <h3 className="text-xl font-bold mb-1 relative z-10">Medical Emergency</h3>
-                            <p className="text-red-100 text-sm mb-4 relative z-10">Immediate dispatch for critical response.</p>
-                            <button className="w-full py-3 bg-white text-red-900 font-black rounded-lg shadow-lg hover:bg-red-50 transform hover:-translate-y-1 transition-all duration-300 relative z-10 flex items-center justify-center gap-2 text-sm">
-                                <FaPhone /> CALL 911
-                            </button>
-                        </div>
                     </div>
 
                     {/* Right Column: Feed (8 cols) */}

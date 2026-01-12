@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { FaBalanceScale, FaGavel, FaBook, FaBriefcase, FaUniversity, FaUserTimes, FaChevronRight, FaTimes, FaLandmark, FaExclamationTriangle } from "react-icons/fa";
+import { FaBalanceScale, FaGavel, FaBook, FaBriefcase, FaUniversity, FaUserTimes, FaChevronRight, FaTimes, FaLandmark, FaExclamationTriangle, FaUserShield } from "react-icons/fa";
 import FactionAnnouncements from "@/components/FactionAnnouncements";
 import FactionJobs from "@/components/FactionJobs";
 import FactionQuickNav from "@/components/FactionQuickNav";
 import DocketList from "@/components/DocketList";
 import ComplaintForm from "@/components/ComplaintForm";
 import FactionRoster from "@/components/FactionRoster";
+import BarRoster from "@/components/BarRoster";
+import FactionResources from "@/components/FactionResources";
 import { db } from '@/lib/firebase';
-import { doc, onSnapshot } from 'firebase/firestore';
 
 export default function DOJPage() {
 
@@ -43,20 +44,15 @@ export default function DOJPage() {
                     <FaBalanceScale className="absolute top-1/2 right-0 -translate-y-1/2 text-[15rem] text-amber-900/10 pointer-events-none rotate-0" />
                 </header>
 
-                {/* Quick Navigation / Key Resources */}
-                <FactionQuickNav items={[
-                    { label: 'Judicial App', subLabel: 'Become a Judge', icon: FaGavel, color: 'amber', href: '#apply' },
-                    { label: 'State Bar', subLabel: 'Attorney Roster', icon: FaUniversity, color: 'indigo', href: '#roster' },
-                    { label: 'Court Docket', subLabel: 'Case Schedule', icon: FaBalanceScale, color: 'blue', href: '#docket' },
-                    { label: 'File Suit', subLabel: 'Open a Case', icon: FaBriefcase, color: 'emerald', href: '#file' },
-                ]} />
+
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
                     {/* Left Column: Feed (8 cols) */}
                     <div className="lg:col-span-8 space-y-8 animate-fade-in-up delay-200">
+
                         {/* Court Dockets Feed */}
-                        <section>
+                        <section id="docket">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
                                 <span className="p-2 bg-amber-500/20 rounded-lg text-amber-500"><FaBalanceScale /></span>
                                 Court Docket Schedule
@@ -84,11 +80,19 @@ export default function DOJPage() {
                             />
                         </section>
 
-                        {/* Roster */}
-                        <section id="roster">
+                        {/* State Bar Association Roster */}
+                        <section id="bar-roster">
+                            <BarRoster
+                                title="State Bar Association Directory"
+                                color="indigo"
+                            />
+                        </section>
+
+                        {/* DOJ Staff Roster */}
+                        <section id="staff">
                             <FactionRoster
                                 department="DOJ"
-                                title="Department Personnel"
+                                title="Judiciary Staff & Leadership"
                                 color="amber"
                             />
                         </section>
@@ -96,6 +100,22 @@ export default function DOJPage() {
 
                     {/* Right Column: Interactive panels (4 cols) */}
                     <div className="lg:col-span-4 space-y-6 animate-fade-in-up delay-300">
+                        {/* DOJ Quick Links Sidebar */}
+                        <FactionResources
+                            faction="DOJ"
+                            variant="sidebar"
+                            title="Quick Links"
+                            settingId="doj_quicklinks"
+                            customDefaults={[
+                                { title: "Careers", desc: "Join Judicial", url: "#apply", icon: "id-card", color: "amber" },
+                                { title: "State Bar", desc: "Attorney Roster", url: "#bar-roster", icon: "landmark", color: "indigo" },
+                                { title: "Staff Hub", desc: "DOJ Personnel", url: "#staff", icon: "shield", color: "blue" },
+                                { title: "Court Docket", desc: "Case Schedule", url: "#docket", icon: "balance", color: "emerald" }
+                            ]}
+                        />
+
+                        {/* Legal Resources Sidebar */}
+                        <FactionResources faction="DOJ" variant="sidebar" />
 
                         {/* Legal Resources Section */}
 

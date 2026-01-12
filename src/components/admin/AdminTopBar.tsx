@@ -65,18 +65,11 @@ export default function AdminTopBar({ onMobileMenuOpen, pageTitle }: AdminTopBar
                     )}
                 </div>
 
-                {/* Profile Indicator (Horizontal style) */}
-                <div className="flex items-center gap-3 pl-4 border-l border-white/10">
-                    <div className="hidden md:flex flex-col items-end">
-                        <span className="text-[10px] font-black text-white/40 uppercase tracking-tighter">Secure Session</span>
-                        <span className="text-[11px] font-bold text-white truncate max-w-[120px]">{userProfile?.icName || user?.email?.split('@')[0]}</span>
-                    </div>
-                    <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-xs font-black text-white shadow-lg shadow-indigo-600/20 overflow-hidden">
-                        {userProfile?.photoURL ? (
-                            <img src={userProfile.photoURL} alt="Profile" className="w-full h-full object-cover" />
-                        ) : (
-                            userProfile?.icName ? userProfile.icName.charAt(0) : 'U'
-                        )}
+                {/* Right Side Actions - Simplified */}
+                <div className="flex items-center gap-4">
+                    <div className="hidden md:flex flex-col items-end px-4 py-1.5 bg-white/5 rounded-xl border border-white/5">
+                        <span className="text-[10px] font-black text-indigo-500 uppercase tracking-tighter">System Ready</span>
+                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Authenticated</span>
                     </div>
                 </div>
             </div>

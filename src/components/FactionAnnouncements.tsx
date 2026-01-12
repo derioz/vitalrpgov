@@ -92,14 +92,14 @@ export default function FactionAnnouncements({ department, title, color, icon: I
                     <div className="h-40 bg-slate-900/50 animate-pulse rounded-2xl border border-white/5"></div>
                 ) : announcements.length > 0 ? (
                     announcements.map((ann) => (
-                        <div key={ann.id} className={`group relative bg-white/5 dark:bg-black/40 backdrop-blur-sm border border-slate-200 dark:border-white/5 rounded-2xl p-6 hover:border-${color}-500/30 transition-all duration-500 overflow-hidden shadow-sm dark:shadow-none`}>
+                        <div key={ann.id} className={`group relative bg-white/5 dark:bg-zinc-900/60 backdrop-blur-sm border border-slate-200 dark:border-white/10 rounded-2xl p-6 hover:border-${color}-500/30 transition-all duration-500 overflow-hidden shadow-sm dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]`}>
 
                             {/* Hover Glow */}
                             <div className={`absolute inset-0 ${colorClasses.bg}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-overlay`}></div>
 
                             <div className="flex flex-col md:flex-row gap-6 relative z-10">
                                 {/* Date Block */}
-                                <div className={`md:w-20 flex-shrink-0 flex flex-col items-center justify-center p-3 rounded-xl bg-slate-100 dark:bg-slate-950/50 border border-slate-200 dark:border-white/5 group-hover:border-${color}-500/20 transition-colors`}>
+                                <div className={`md:w-20 flex-shrink-0 flex flex-col items-center justify-center p-3 rounded-xl bg-slate-100 dark:bg-zinc-950/80 border border-slate-200 dark:border-white/10 group-hover:border-${color}-500/30 transition-colors`}>
                                     <span className={`${colorClasses.text} font-black text-2xl`}>
                                         {ann.createdAt?.seconds ? new Date(ann.createdAt.seconds * 1000).getDate() : '!!'}
                                     </span>

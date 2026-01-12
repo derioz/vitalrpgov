@@ -16,6 +16,7 @@ import {
     FaSignOutAlt,
     FaUsers,
     FaLink,
+    FaExternalLinkAlt,
     FaCode,
     FaShieldAlt,
     FaClipboardList,
@@ -190,6 +191,14 @@ export default function AdminSidebar({ isCollapsed = false, onToggle, onClose }:
                             isCollapsed={isCollapsed}
                         />
                         <SidebarItem
+                            icon={FaExternalLinkAlt}
+                            label="Quick Links"
+                            href="/admin/doj/quick-links"
+                            active={isActive('/admin/doj/quick-links')}
+                            onClick={onClose}
+                            isCollapsed={isCollapsed}
+                        />
+                        <SidebarItem
                             icon={FaGavel}
                             label="Court Dockets"
                             href="/admin/doj/dockets"
@@ -252,6 +261,22 @@ export default function AdminSidebar({ isCollapsed = false, onToggle, onClose }:
                             isCollapsed={isCollapsed}
                         />
                         <SidebarItem
+                            icon={FaLink}
+                            label="Resources"
+                            href="/admin/lspd/resources"
+                            active={isActive('/admin/lspd/resources')}
+                            onClick={onClose}
+                            isCollapsed={isCollapsed}
+                        />
+                        <SidebarItem
+                            icon={FaExternalLinkAlt}
+                            label="Quick Links"
+                            href="/admin/lspd/quick-links"
+                            active={isActive('/admin/lspd/quick-links')}
+                            onClick={onClose}
+                            isCollapsed={isCollapsed}
+                        />
+                        <SidebarItem
                             icon={FaBriefcase}
                             label="Careers"
                             href="/admin/careers?dept=LSPD"
@@ -290,6 +315,22 @@ export default function AdminSidebar({ isCollapsed = false, onToggle, onClose }:
                             isCollapsed={isCollapsed}
                         />
                         <SidebarItem
+                            icon={FaLink}
+                            label="Resources"
+                            href="/admin/lsems/resources"
+                            active={isActive('/admin/lsems/resources')}
+                            onClick={onClose}
+                            isCollapsed={isCollapsed}
+                        />
+                        <SidebarItem
+                            icon={FaExternalLinkAlt}
+                            label="Quick Links"
+                            href="/admin/lsems/quick-links"
+                            active={isActive('/admin/lsems/quick-links')}
+                            onClick={onClose}
+                            isCollapsed={isCollapsed}
+                        />
+                        <SidebarItem
                             icon={FaBriefcase}
                             label="Careers"
                             href="/admin/careers?dept=LSEMS"
@@ -324,6 +365,22 @@ export default function AdminSidebar({ isCollapsed = false, onToggle, onClose }:
                             label="Roster"
                             href="/admin/roster?dept=SAFD"
                             active={pathname === '/admin/roster' && hasParam('dept', 'SAFD')}
+                            onClick={onClose}
+                            isCollapsed={isCollapsed}
+                        />
+                        <SidebarItem
+                            icon={FaLink}
+                            label="Resources"
+                            href="/admin/safd/resources"
+                            active={isActive('/admin/safd/resources')}
+                            onClick={onClose}
+                            isCollapsed={isCollapsed}
+                        />
+                        <SidebarItem
+                            icon={FaExternalLinkAlt}
+                            label="Quick Links"
+                            href="/admin/safd/quick-links"
+                            active={isActive('/admin/safd/quick-links')}
                             onClick={onClose}
                             isCollapsed={isCollapsed}
                         />

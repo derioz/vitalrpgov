@@ -7,6 +7,7 @@ import RoleGate from '@/components/RoleGate';
 import FactionQuickNav from '@/components/FactionQuickNav';
 import ComplaintForm from '@/components/ComplaintForm';
 import FactionRoster from "@/components/FactionRoster";
+import FactionResources from "@/components/FactionResources";
 import { FaBullhorn, FaUserSecret, FaNewspaper, FaShieldAlt, FaIdCard, FaCar, FaGavel, FaPhone, FaChevronRight, FaBook, FaBriefcase, FaExclamationTriangle } from 'react-icons/fa';
 
 export default function LSPDPage() {
@@ -39,13 +40,7 @@ export default function LSPDPage() {
                     <FaShieldAlt className="absolute top-1/2 right-0 -translate-y-1/2 text-[15rem] text-blue-900/10 pointer-events-none rotate-12" />
                 </header>
 
-                {/* Quick Navigation / Key Resources */}
-                <FactionQuickNav items={[
-                    { label: 'Join LSPD', subLabel: 'Police Academy', icon: FaIdCard, color: 'blue', href: '#apply' },
-                    { label: 'Staff Roster', subLabel: 'Command Chain', icon: FaShieldAlt, color: 'indigo', href: '#roster' },
-                    { label: 'SOP Handbook', subLabel: 'Procedural Guides', icon: FaBook, color: 'sky', href: '#sop' },
-                    { label: 'Impound Lot', subLabel: 'Vehicle Recovery', icon: FaCar, color: 'slate', href: '#impound' },
-                ]} />
+
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
@@ -80,6 +75,22 @@ export default function LSPDPage() {
 
                     {/* Right Column: Interactive panels (4 cols) */}
                     <div className="lg:col-span-4 space-y-6 animate-fade-in-up delay-300">
+                        {/* LSPD Quick Links Sidebar */}
+                        <FactionResources
+                            faction="LSPD"
+                            variant="sidebar"
+                            title="Quick Links"
+                            settingId="lspd_quicklinks"
+                            customDefaults={[
+                                { title: "Join LSPD", desc: "Police Academy", url: "#apply", icon: "id-card", color: "blue" },
+                                { title: "Staff Roster", desc: "Command Chain", url: "#roster", icon: "shield", color: "indigo" },
+                                { title: "SOP Handbook", desc: "Procedural Guides", url: "#sop", icon: "book", color: "sky" },
+                                { title: "Impound Lot", desc: "Vehicle Recovery", url: "#impound", icon: "car", color: "slate" }
+                            ]}
+                        />
+
+                        {/* LSPD Resources Sidebar */}
+                        <FactionResources faction="LSPD" variant="sidebar" />
 
                         <div className="grid grid-cols-2 gap-3">
                             {/* File Complaint Button */}
@@ -99,58 +110,8 @@ export default function LSPDPage() {
                                 </div>
                             </button>
 
-                            {[
-                                { icon: FaIdCard, label: 'MDT', color: 'blue' },
-                                { icon: FaIdCard, label: 'MDT', color: 'blue' },
-                                { icon: FaCar, label: 'Impound', color: 'slate' },
-                                { icon: FaNewspaper, label: 'Evidence', color: 'cyan' },
-                            ].map((action, i) => (
-                                <button key={i} className={`
-                                    relative overflow-hidden p-4 rounded-xl bg-white/5 dark:bg-black/40 border border-slate-200 dark:border-white/5 
-                                    hover:bg-blue-600 hover:border-blue-500 hover:shadow-[0_0_30px_rgba(37,99,235,0.3)]
-                                    transition-all duration-300 group text-left
-                                `}>
-                                    <action.icon className="text-2xl text-slate-500 dark:text-slate-400 group-hover:text-white mb-3 transition-colors" />
-                                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-white transition-colors">{action.label}</span>
-                                    <FaChevronRight className="absolute bottom-3 right-3 text-white/0 group-hover:text-white/100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300" />
-                                </button>
-                            ))}
                         </div>
 
-                        {/* Gang Intel Card (Glass Red) */}
-                        <RoleGate allowedRoles={['lspd', 'admin']}>
-                            <div className="relative overflow-hidden rounded-xl bg-red-950/20 border border-red-500/20 p-6 hover:bg-red-950/30 hover:border-red-500/40 transition-all duration-500 group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <FaUserSecret className="text-8xl text-red-500 transform rotate-12" />
-                                </div>
-
-                                <h3 className="text-xl font-bold text-red-500 mb-2 flex items-center gap-2">
-                                    <FaUserSecret /> GANG INTEL
-                                </h3>
-                                <p className="text-red-400/60 text-[10px] mb-4 font-mono tracking-wide">EYES ONLY // CLEARANCE REQUIRED</p>
-
-                                <div className="space-y-2 relative z-10">
-                                    {['Ballas', 'Vagos', 'Lost MC'].map((gang) => (
-                                        <div key={gang} className="flex justify-between items-center p-2 rounded-lg bg-red-900/10 border border-red-500/10">
-                                            <span className="text-red-100 font-bold text-xs">{gang}</span>
-                                            <div className="flex gap-1">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </RoleGate>
-
-                        {/* Dispatch Card */}
-                        <div className="rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 p-6 shadow-2xl shadow-blue-900/20 text-white relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
-                            <h3 className="text-xl font-bold mb-1 relative z-10">Dispatch 911</h3>
-                            <p className="text-blue-100 text-sm mb-4 relative z-10">Direct link to central command.</p>
-                            <button className="w-full py-3 bg-white text-blue-900 font-black rounded-lg shadow-lg hover:bg-blue-50 transform hover:-translate-y-1 transition-all duration-300 relative z-10 flex items-center justify-center gap-2 text-sm">
-                                <FaPhone /> CONNECT RADIO
-                            </button>
-                        </div>
                     </div>
 
                 </div>

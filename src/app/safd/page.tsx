@@ -8,6 +8,7 @@ import FactionQuickNav from "@/components/FactionQuickNav";
 import ComplaintForm from "@/components/ComplaintForm";
 
 import FactionRoster from "@/components/FactionRoster";
+import FactionResources from "@/components/FactionResources";
 
 export default function SAFDPage() {
     const [showComplaintForm, setShowComplaintForm] = useState(false);
@@ -38,13 +39,7 @@ export default function SAFDPage() {
                     <FaFireExtinguisher className="absolute top-1/2 right-0 -translate-y-1/2 text-[15rem] text-orange-900/10 pointer-events-none rotate-12" />
                 </header>
 
-                {/* Quick Navigation / Key Resources */}
-                <FactionQuickNav items={[
-                    { label: 'Join SAFD', subLabel: 'Fire Academy', icon: FaClipboardCheck, color: 'orange', href: '#apply' },
-                    { label: 'Dept. Roster', subLabel: 'Firefighters', icon: FaHardHat, color: 'red', href: '#roster' },
-                    { label: 'Inspections', subLabel: 'Business Safety', icon: FaClipboardCheck, color: 'yellow', href: '#inspections' },
-                    { label: 'Burn Permits', subLabel: 'Public Access', icon: FaFire, color: 'green', href: '#permit' },
-                ]} />
+
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
@@ -79,6 +74,22 @@ export default function SAFDPage() {
 
                     {/* Right Column: Interactive panels (4 cols) */}
                     <div className="lg:col-span-4 space-y-6 animate-fade-in-up delay-300">
+                        {/* SAFD Quick Links Sidebar */}
+                        <FactionResources
+                            faction="SAFD"
+                            variant="sidebar"
+                            title="Quick Links"
+                            settingId="safd_quicklinks"
+                            customDefaults={[
+                                { title: "Join SAFD", desc: "Fire Academy", url: "#apply", icon: "id-card", color: "orange" },
+                                { title: "Dept. Roster", desc: "Firefighters", url: "#roster", icon: "shield", color: "red" },
+                                { title: "Inspections", desc: "Business Safety", url: "#inspections", icon: "file", color: "yellow" },
+                                { title: "Burn Permits", desc: "Public Access", url: "#permit", icon: "fire", color: "green" }
+                            ]}
+                        />
+
+                        {/* SAFD Resources Sidebar */}
+                        <FactionResources faction="SAFD" variant="sidebar" />
 
                         {/* Quick Actions Grid */}
                         <div className="grid grid-cols-2 gap-3">
@@ -99,33 +110,8 @@ export default function SAFDPage() {
                                 </div>
                             </button>
 
-                            {[
-                                { icon: FaClipboardCheck, label: 'Reports', color: 'blue' },
-                                { icon: FaHardHat, label: 'Roster', color: 'orange' },
-                                { icon: FaTruckMonster, label: 'Fleet', color: 'red' },
-                                { icon: FaTools, label: 'Equip', color: 'slate' },
-                            ].map((action, i) => (
-                                <button key={i} className={`
-                                relative overflow-hidden p-4 rounded-xl bg-white/5 dark:bg-black/40 border border-slate-200 dark:border-white/5 
-                                hover:bg-orange-600 hover:border-orange-500 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)]
-                                transition-all duration-300 group text-left
-                            `}>
-                                    <action.icon className="text-2xl text-slate-500 dark:text-slate-400 group-hover:text-white mb-3 transition-colors" />
-                                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-white transition-colors">{action.label}</span>
-                                    <FaChevronRight className="absolute bottom-3 right-3 text-white/0 group-hover:text-white/100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300" />
-                                </button>
-                            ))}
                         </div>
 
-                        {/* Dispatch Card */}
-                        <div className="rounded-2xl bg-gradient-to-br from-orange-600 to-orange-800 p-6 shadow-2xl shadow-orange-900/20 text-white relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
-                            <h3 className="text-xl font-bold mb-1 relative z-10">Fire Dispatch</h3>
-                            <p className="text-orange-100 text-sm mb-4 relative z-10">Direct line to fire emergency coordination.</p>
-                            <button className="w-full py-3 bg-white text-orange-900 font-black rounded-lg shadow-lg hover:bg-orange-50 transform hover:-translate-y-1 transition-all duration-300 relative z-10 flex items-center justify-center gap-2 text-sm">
-                                <FaPhone /> CONNECT RADIO
-                            </button>
-                        </div>
                     </div>
 
                 </div>

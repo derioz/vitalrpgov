@@ -100,7 +100,7 @@ export default function AdminLayout({
             )}
 
             {/* Layout Wrapper */}
-            <div className={`flex transition-all duration-500 h-screen overflow-hidden p-4 md:p-6 gap-6`}>
+            <div className={`flex transition-all duration-500 h-[calc(100vh-95px)] overflow-hidden p-4 md:p-6 gap-6`}>
 
                 {/* Desktop Sidebar Area */}
                 <div className={`

@@ -95,7 +95,7 @@ export default function FactionRoster({ department, title = "Department Roster",
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {roster.map((member) => (
-                    <div key={member.id} className="group relative h-[360px] rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] border border-white/5 bg-black/40">
+                    <div key={member.id} className="group relative h-[360px] rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] border border-white/10 bg-zinc-950/80">
 
                         {/* Background Image */}
                         <div className="absolute inset-0 bg-slate-950 group-hover:scale-105 transition-transform duration-700">

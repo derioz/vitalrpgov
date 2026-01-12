@@ -99,7 +99,7 @@ export default function ComplaintLookup() {
         <div className="w-full max-w-2xl mx-auto">
             {/* Search Bar */}
             {!complaint && (
-                <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 shadow-xl">
+                <div className="bg-white/10 dark:bg-zinc-900/40 backdrop-blur-md p-8 rounded-3xl border border-white/10 shadow-2xl shadow-black/50">
                     <h3 className="text-2xl font-bold text-white mb-4 text-center">Check Complaint Status</h3>
                     <form onSubmit={handleSearch} className="flex gap-2">
                         <input
@@ -123,16 +123,16 @@ export default function ComplaintLookup() {
 
             {/* Complaint View */}
             {complaint && (
-                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-fade-in-up">
+                <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-white/20 animate-fade-in-up">
                     {/* Header */}
-                    <div className="p-6 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                    <div className="p-6 bg-slate-50 dark:bg-zinc-950/80 border-b border-slate-200 dark:border-white/10 flex justify-between items-center">
                         <div>
                             <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{complaint.department} INTERNAL AFFAIRS</span>
                             <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-1">Case #{complaint.accessCode}</h2>
                         </div>
                         <div className={`px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider ${complaint.status === 'Resolved' ? 'bg-green-100 text-green-700' :
-                                complaint.status === 'Dismissed' ? 'bg-red-100 text-red-700' :
-                                    'bg-amber-100 text-amber-700'
+                            complaint.status === 'Dismissed' ? 'bg-red-100 text-red-700' :
+                                'bg-amber-100 text-amber-700'
                             }`}>
                             {complaint.status}
                         </div>
@@ -144,8 +144,8 @@ export default function ComplaintLookup() {
                             {complaint.messages.map((msg, idx) => (
                                 <div key={idx} className={`flex ${msg.role === 'civilian' ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[80%] rounded-2xl p-4 shadow-sm ${msg.role === 'civilian'
-                                            ? 'bg-blue-600 text-white rounded-tr-none'
-                                            : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-tl-none'
+                                        ? 'bg-blue-600 text-white rounded-tr-none'
+                                        : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-tl-none'
                                         }`}>
                                         <div className="flex items-center gap-2 mb-2 text-xs opacity-70">
                                             {msg.role === 'official' ? <FaShieldAlt /> : <FaUser />}
