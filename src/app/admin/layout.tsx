@@ -6,6 +6,7 @@ import { useEffect, useState, Suspense } from "react";
 import { FaBars } from "react-icons/fa";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopBar from "@/components/admin/AdminTopBar";
+import ChangelogModal from "@/components/admin/ChangelogModal";
 
 export default function AdminLayout({
     children,
@@ -17,6 +18,7 @@ export default function AdminLayout({
     const pathname = usePathname();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [changelogOpen, setChangelogOpen] = useState(false);
 
     useEffect(() => {
         if (!loading && !user) {
@@ -93,6 +95,7 @@ export default function AdminLayout({
                                 isCollapsed={false}
                                 onToggle={() => { }}
                                 onClose={() => setMobileMenuOpen(false)}
+                                onOpenChangelog={() => setChangelogOpen(true)}
                             />
                         </Suspense>
                     </div>
@@ -111,6 +114,7 @@ export default function AdminLayout({
                         <AdminSidebar
                             isCollapsed={sidebarCollapsed}
                             onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+                            onOpenChangelog={() => setChangelogOpen(true)}
                         />
                     </Suspense>
                 </div>
@@ -132,6 +136,11 @@ export default function AdminLayout({
                     </main>
                 </div>
             </div>
+            {/* Global Changelog Modal */}
+            <ChangelogModal
+                isOpen={changelogOpen}
+                onClose={() => setChangelogOpen(false)}
+            />
         </div>
     );
 }

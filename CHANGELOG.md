@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.8.0 - UX Polish & Stability (2026-01-12)
+### New Features
+- **Changelog Popup**: accessing the Changelog from the Admin Sidebar now opens a seamless modal overlay instead of navigating away from your work.
+
 ## v3.7.5 - Hydration Stability (2026-01-12)
 ### Bug Fixes
 - **Hydration Mismatch**: Added global suppression for hydration warnings (`suppressHydrationWarning`) to prevent crashes caused by browser extensions or hydration mismatches in the layout.

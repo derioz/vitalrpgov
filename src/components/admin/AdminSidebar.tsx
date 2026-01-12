@@ -37,18 +37,24 @@ interface AdminSidebarProps {
     isCollapsed?: boolean;
     onToggle?: () => void;
     onClose?: () => void;
+    onOpenChangelog?: () => void;
 }
 
-const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false, onClick, isCollapsed, imageUrl }: any) => {
+const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false, onClick, isCollapsed, imageUrl, onOpenChangelog }: any) => {
     // Force hard reload for Changelog to bypass persistent RSC/Next.js hydration crash on this specific route
     const isChangelog = href === '/admin/changelog';
-    const Component = isChangelog ? 'a' : Link;
+    // If it's changelog, we handle it specially
+    const Component = isChangelog ? 'div' : Link;
 
     return (
         <Component
-            href={href}
+            href={isChangelog ? undefined : href}
             // prefetch={false} // Not needed for 'a' tag, relevant for Link
             onClick={(e: any) => {
+                if (isChangelog && onOpenChangelog) {
+                    e.preventDefault();
+                    onOpenChangelog();
+                }
                 if (onClick) onClick();
             }}
             title={isCollapsed ? label : ""}
@@ -91,7 +97,7 @@ const SidebarItem = ({ icon: Icon, label, href, active, isSystem = false, onClic
     );
 }
 
-export default function AdminSidebar({ isCollapsed = false, onToggle, onClose }: AdminSidebarProps) {
+export default function AdminSidebar({ isCollapsed = false, onToggle, onClose, onOpenChangelog }: AdminSidebarProps) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { signOut, userProfile, loading } = useAuth();
@@ -167,6 +173,7 @@ export default function AdminSidebar({ isCollapsed = false, onToggle, onClose }:
                         isSystem
                         onClick={onClose}
                         isCollapsed={isCollapsed}
+                        onOpenChangelog={onOpenChangelog}
                     />
                 </div>
 
